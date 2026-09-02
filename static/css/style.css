@@ -5,10 +5,10 @@
 }
 
 :root {
-    --ink: #1c1917;
-    --paper: #faf6f0;
-    --accent: #d95d39;
-    --accent-dark: #a8442a;
+    --ink: #27170c;
+    --paper: #f4dbb5;
+    --accent: #4c6ac6;
+    --accent-dark: #07094e;
     --line: #e3d9c9;
     --text-muted: #6b6459;
     --radius: 4px;
@@ -23,6 +23,10 @@ body {
 
 h1, .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
+}
+
+h2 {
+    font-family: "Comic Sans", -apple-system, sans-serif;
 }
 
 .container {
