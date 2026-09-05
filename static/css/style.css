@@ -5,7 +5,7 @@
 }
 
 :root {
-    --ink: #27170c;
+    --ink: #170a01;
     --paper: #f4dbb5;
     --accent: #4c6ac6;
     --accent-dark: #07094e;
@@ -15,18 +15,22 @@
 }
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, "Pixelify Sans", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background-color: var(--paper);
     line-height: 1.6;
 }
 
 h1, .brand {
-    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-family: "Pixelify Sans", -apple-system, sans-serif;
 }
 
 h2 {
-    font-family: "Comic Sans", -apple-system, sans-serif;
+    font-family: "Pixelify Sans", -apple-system, sans-serif;
+}
+
+h3 {
+    font-family: "Pixelify Sans", monospace;
 }
 
 .container {
