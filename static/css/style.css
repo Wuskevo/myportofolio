@@ -201,3 +201,149 @@ h3 {
         justify-content: flex-start;
     }
 }
+
+.projects {
+	padding: 4rem 0;
+}
+
+.projects h2 {
+	font-size: 2rem;
+	margin-bottom: 2rem;
+}
+
+.project-grid {
+    justify-content: flex-start;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 1.5rem;
+}
+
+.project-card {
+	background-color: var(--paper);
+	border: 2px solid var(--ink);
+	border-radius: var(--radius);
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.project-card h3 {
+	font-size: 1.2rem;
+}
+
+.project-card p {
+	color: var(--text-muted);
+	font-size: 0.9rem;
+}
+
+.tag-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.tag {
+	font-size: 0.75rem;
+	font-weight: 600;
+	background-color: var(--line);
+	color: var(--ink);
+	padding: 0.25rem 0.6rem;
+	border-radius: var(--radius);
+}
+
+.project-link {
+	align-self: flex-start;
+	margin-top: 0.5rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-decoration: none;
+	color: var(--paper);
+	background-color: var(--accent);
+	border-radius: var(--radius);
+	padding: 0.5rem 1.1rem;
+	transition: background-color 0.2s ease;
+}
+
+.project-link:hover {
+	background-color: var(--accent-dark);
+}
+
+.experience {
+	padding: 4rem 0;
+	border-top: 1px solid var(--line);
+}
+
+.experience h2 {
+	font-size: 2rem;
+	margin-bottom: 2rem;
+}
+
+.timeline {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.timeline-item {
+	display: grid;
+	grid-template-columns: 160px 1fr;
+	gap: 1.5rem;
+}
+
+.timeline-date {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--accent-dark);
+}
+
+.timeline-content h3 {
+	font-size: 1.1rem;
+	margin-bottom: 0.25rem;
+}
+
+.timeline-org {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-muted);
+	margin-bottom: 0.5rem;
+}
+
+.timeline-content p:last-child {
+	color: var(--text-muted);
+	font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+	.timeline-item {
+		grid-template-columns: 1fr;
+		gap: 0.35rem;
+	}
+}
+
+.skills {
+	padding: 4rem 0;
+	border-top: 1px solid var(--line);
+}
+
+.skills h2 {
+	font-size: 2rem;
+	margin-bottom: 1.5rem;
+}
+
+.skill-list {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.skill-tag {
+	font-size: 0.85rem;
+	font-weight: 600;
+	background-color: var(--ink);
+	color: var(--paper);
+	padding: 0.5rem 1rem;
+	border-radius: var(--radius);
+}
