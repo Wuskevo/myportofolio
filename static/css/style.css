@@ -11,26 +11,26 @@
     --accent-dark: #07094e;
     --line: #e3d9c9;
     --text-muted: #6b6459;
-    --radius: 4px;
+    --radius: 16px;
 }
 
 body {
-    font-family: -apple-system, "Pixelify Sans", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, "VT323", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background-color: var(--paper);
     line-height: 1.6;
 }
 
 h1, .brand {
-    font-family: "Pixelify Sans", -apple-system, sans-serif;
+    font-family: "VT323", -apple-system, sans-serif;
 }
 
 h2 {
-    font-family: "Pixelify Sans", -apple-system, sans-serif;
+    font-family: "VT323", -apple-system, sans-serif;
 }
 
 h3 {
-    font-family: "Pixelify Sans", monospace;
+    font-family: "VT323", monospace;
 }
 
 .container {
@@ -124,19 +124,19 @@ h3 {
 }
 
 .meta-row dd {
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .social-links {
     display: flex;
-    gap: 0.5rem;
+    gap: 1.0rem;
     flex-wrap: wrap;
 }
 
 .social-link {
     display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 1.0rem;
+    font-weight: 400;
     text-decoration: none;
     color: var(--paper);
     background-color: var(--ink);
@@ -245,7 +245,7 @@ h3 {
 
 .tag {
 	font-size: 0.75rem;
-	font-weight: 600;
+	font-weight: 400;
 	background-color: var(--line);
 	color: var(--ink);
 	padding: 0.25rem 0.6rem;
@@ -256,7 +256,7 @@ h3 {
 	align-self: flex-start;
 	margin-top: 0.5rem;
 	font-size: 0.85rem;
-	font-weight: 600;
+	font-weight: 400;
 	text-decoration: none;
 	color: var(--paper);
 	background-color: var(--accent);
@@ -294,7 +294,7 @@ h3 {
 
 .timeline-date {
 	font-size: 0.85rem;
-	font-weight: 600;
+	font-weight: 400;
 	color: var(--accent-dark);
 }
 
@@ -305,7 +305,7 @@ h3 {
 
 .timeline-org {
 	font-size: 0.85rem;
-	font-weight: 600;
+	font-weight: 400;
 	color: var(--text-muted);
 	margin-bottom: 0.5rem;
 }
@@ -341,7 +341,7 @@ h3 {
 
 .skill-tag {
 	font-size: 0.85rem;
-	font-weight: 600;
+	font-weight: 400;
 	background-color: var(--ink);
 	color: var(--paper);
 	padding: 0.5rem 1rem;
