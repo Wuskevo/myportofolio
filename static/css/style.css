@@ -138,7 +138,9 @@ h3 {
 }
 
 .social-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-size: 1.0rem;
     font-weight: 400;
     text-decoration: none;
@@ -350,4 +352,13 @@ h3 {
 	color: var(--paper);
 	padding: 0.5rem 1rem;
 	border-radius: var(--radius);
+}
+
+.social-link ion-icon {
+	font-size: 1.2 rem;
+	color: var(--paper);
+}
+
+.social-link:hover ion-icon, .social-link:hover span {
+	color: var(--paper);
 }
