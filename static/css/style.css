@@ -12,8 +12,8 @@ html {
     --ink: #170a01;
     --paper: #f4dbb5;
     --accent: #4c6ac6;
-    --accent-dark: #07094e;
-    --line: #e3d9c9;
+    --accent-dark: #283f84;
+    --line: #d68707;
     --text-muted: #6b6459;
     --radius: 16px;
 }
@@ -44,7 +44,7 @@ h3 {
 }
 
 .site-header {
-    border-bottom: 1px solid var(--line);
+    border-bottom: 2px solid var(--line);
 }
 
 .site-header .container {
@@ -145,14 +145,14 @@ h3 {
     font-weight: 400;
     text-decoration: none;
     color: var(--paper);
-    background-color: var(--ink);
+    background-color: var(--accent);
     border-radius: var(--radius);
     padding: 0.5rem 1.1rem;
     transition: background-color 0.2s ease;
 }
 
 .social-link:hover {
-    background-color: var(--accent);
+    background-color: var(--accent-dark);
 }
 
 .hero-photo {
@@ -187,7 +187,7 @@ h3 {
     padding: 1.5rem;
     color: var(--text-muted);
     font-size: 0.85rem;
-    border-top: 1px solid var(--line);
+    border-top: 2px solid var(--line);
 }
 
 @media (max-width: 600px) {
@@ -250,10 +250,10 @@ h3 {
 }
 
 .tag {
-	font-size: 0.75rem;
+	font-size: 1.0rem;
 	font-weight: 400;
 	background-color: var(--line);
-	color: var(--ink);
+	color: var(--paper);
 	padding: 0.25rem 0.6rem;
 	border-radius: var(--radius);
 }
@@ -280,7 +280,7 @@ h3 {
 
 .experience {
 	padding: 4rem 0;
-	border-top: 1px solid var(--line);
+	border-top: 2px solid var(--line);
 }
 
 .experience h2 {
@@ -333,7 +333,7 @@ h3 {
 
 .skills {
 	padding: 4rem 0;
-	border-top: 1px solid var(--line);
+	border-top: 2px solid var(--line);
 }
 
 .skills h2 {
@@ -351,7 +351,7 @@ h3 {
 .skill-tag {
 	font-size: 0.85rem;
 	font-weight: 400;
-	background-color: var(--ink);
+	background-color: var(--line);
 	color: var(--paper);
 	padding: 0.5rem 1rem;
 	border-radius: var(--radius);
