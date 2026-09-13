@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from main.models import Experience
+from main.models import Experience, Credential
 
 
 class MainTest(TestCase):
@@ -56,3 +56,80 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Completed")
         self.assertNotContains(response, "Ongoing")
+
+class CredentialsTest(TestCase):
+    def setUp(self):
+        self.credentials = {}
+        for category, _ in Credential.CREDENTIAL_CATEGORIES: 
+            self.credentials[category] = Credential.objects.create(
+                title=f"{category} title",
+                issuer=f"{category} issuer",
+                description=f"{category} description",
+                category=category,
+                date_received=timezone.now()
+            )
+
+    def test_credentials_page_accessible_and_correct_template(self):
+        response = self.client.get(reverse("main:show_credential"))  
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "credential.html")  
+
+    def test_credentials_appear_grouped_by_category(self):
+        category_headings = {
+            "certification": "My Certifications",
+            "competition": "My Competitions",
+            "award": "My Awards",
+            "scholarship": "My Scholarships",
+        }
+
+        response = self.client.get(reverse("main:show_credential"))
+        for category, credential in self.credentials.items():
+            self.assertContains(response, credential.title)
+            self.assertContains(response, credential.issuer)
+            self.assertContains(response, category_headings[category])
+
+    def test_empty_category_shows_placeholder(self):
+        self.credentials["certification"].delete()
+        response = self.client.get(reverse("main:show_credential"))
+
+        self.assertContains(response, "No credentials have been added yet.", count=1)
+        # The other three categories still have their credential rendered
+        self.assertContains(response, self.credentials["competition"].title)
+        self.assertContains(response, self.credentials["award"].title)
+        self.assertContains(response, self.credentials["scholarship"].title)
+
+    def test_all_categories_empty(self):
+        Credential.objects.all().delete()
+        response = self.client.get(reverse("main:show_credential"))
+
+        self.assertContains(response, "No credentials have been added yet.", count=4)
+
+    def test_credential_expiry_states(self):
+        self.credentials["competition"].delete()
+        self.credentials["award"].delete()
+        self.credentials["scholarship"].delete()
+        cred = self.credentials["certification"]
+
+        response = self.client.get(reverse("main:show_credential"))
+        self.assertContains(response, "Never expires")
+
+        cred.expiry_date = timezone.now()
+        cred.save()
+        response = self.client.get(reverse("main:show_credential"))
+        self.assertContains(response, "Expires")
+        self.assertNotContains(response, "Never expires")
+
+    def test_credential_url_states(self):
+        self.credentials["competition"].delete()
+        self.credentials["award"].delete()
+        self.credentials["scholarship"].delete()
+        cred = self.credentials["certification"]
+
+        response = self.client.get(reverse("main:show_credential"))
+        self.assertContains(response, "Verification not provided")
+
+        cred.credential_url = "https://example.com/verify"
+        cred.save()
+        response = self.client.get(reverse("main:show_credential"))
+        self.assertContains(response, f'href="{cred.credential_url}"')
+        self.assertNotContains(response, "Verification not provided")
