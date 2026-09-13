@@ -17,7 +17,7 @@ html {
    ========================================================================== */
 
 :root {
-    --ink: #170a01;
+    --ink: #231104;
     --paper: #f4dbb5;
     --accent: #4c6ac6;
     --accent-dark: #283f84;
@@ -261,7 +261,7 @@ h3 {
 
 .project-card {
 	background-color: var(--paper);
-	border: 2px solid var(--ink);
+	border: var(--line-width) solid var(--line);
 	border-radius: var(--radius);
 	padding: 1.5rem;
 	display: flex;
@@ -407,6 +407,75 @@ h3 {
 	color: var(--paper);
 	padding: 0.5rem 1rem;
 	border-radius: var(--radius);
+}
+
+/* ==========================================================================
+   Credentials : Most copied from Projects
+   ========================================================================== */
+
+.credential-section {
+    padding: 4rem 0; /* same as .projects */
+}
+
+.credential-section h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem; /* same as .projects h2 */
+}
+
+.credential-grid {
+    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* same minmax as .project-grid */
+    gap: 1.5rem;
+}
+
+.credential-card {
+    background-color: var(--paper);
+    border: var(--line-width) solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.credential-card h2 {
+    font-size: 1.2rem; /* matches .project-card h3 sizing, since credential title is h2 not h3 */
+}
+
+.credential-issuer,
+.credential-description,
+.credential-date,
+.credential-expiry {
+    color: var(--text-muted);
+    font-size: 0.9rem; /* placeholder — same as .project-card p for now */
+}
+
+.credential-image {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: var(--radius);
+}
+
+.credential-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--paper);
+    background-color: var(--accent);
+    border-radius: var(--radius);
+    padding: 0.5rem 1.1rem;
+    transition: background-color 0.2s ease;
+}
+
+.credential-link:hover {
+    background-color: var(--accent-dark);
 }
 
 /* ==========================================================================
