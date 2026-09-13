@@ -71,6 +71,13 @@ class Credential(models.Model):
         blank=True,
         null=True
     )
+
+    @classmethod
+    def grouped_by_category(cls):
+        return {
+            value: cls.objects.filter(category=value)
+            for value, label in cls.CREDENTIAL_CATEGORIES
+        }
     
 
         

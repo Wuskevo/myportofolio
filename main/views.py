@@ -27,6 +27,6 @@ def show_experience(request):
 def show_credential(request):
     context = {
         "name": "Clement Kevin Tanadi",
-        "credential_list": Credential.objects.all(),
+        "credentials_by_category": Credential.grouped_by_category(),
     }
     return render(request, "credential.html", context)
