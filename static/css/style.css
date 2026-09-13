@@ -17,14 +17,82 @@ html {
    ========================================================================== */
 
 :root {
+    /* --- Color --- */
     --ink: #231104;
     --paper: #f4dbb5;
     --accent: #4c6ac6;
     --accent-dark: #283f84;
     --line: #d68707;
-    --line-width: 2px;
     --text-muted: #3f2701;
+
+    /* --- Structural --- */
+    --line-width: 2px;
     --radius: 16px;
+
+    /* --- Spacing scale ---
+       Named by size, not by where they're used, so the same token
+       can be reused anywhere that magnitude of space is needed. */
+    --space-3xs: 0.15rem;  /* meta-row dt bottom margin */
+    --space-2xs: 0.25rem;  /* tag / skill-tag vertical padding */
+    --space-xs:  0.4rem;   /* icon-to-label gap in pill links */
+    --space-sm:  0.5rem;   /* pill button vertical padding */
+    --space-sm2: 0.6rem;   /* skill-list gap; tag horizontal padding */
+    --space-md:  0.75rem;  /* card internal gap; bio bottom margin fraction */
+    --space-lg:  1rem;     /* experience-grid gap */
+    --space-lg2: 1.1rem;   /* pill button horizontal padding */
+    --space-xl:  1.25rem;  /* photo-block offset; card padding; experience-card padding */
+    --space-2xl: 1.5rem;   /* container side padding; most section gaps */
+    --space-3xl: 2rem;     /* project/skills h2 bottom margin; meta-list gap */
+    --space-4xl: 3rem;     /* hero-grid column gap */
+    --space-5xl: 4rem;     /* vertical section padding (projects, experience, skills, credentials) */
+    --space-6xl: 4.5rem;   /* hero top padding */
+    --space-7xl: 5rem;     /* hero bottom padding */
+
+    /* --- Font-size scale ---
+       Kept separate from spacing: bumping type size shouldn't
+       silently bump layout spacing too. */
+    --font-2xs: 0.75rem;   /* meta-row dt label; experience-category label */
+    --font-xs:  0.8rem;    /* section-kicker */
+    --font-sm:  0.85rem;   /* nav links; social-link text; experience-status; credential-link */
+    --font-sm2: 0.9rem;    /* project-card / credential body copy */
+    --font-base: 0.95rem;  /* nav link default */
+    --font-md:  1rem;      /* social-link / tag text */
+    --font-lg:  1.2rem;    /* project-card h3; icon glyphs in pills */
+    --font-lg2: 1.25rem;   /* experience-card h2 */
+    --font-xl:  1.3rem;    /* .brand */
+    --font-2xl: 2rem;      /* all section h1/h2 headings */
+    --font-hero: clamp(3rem, 7vw, 5rem); /* hero identity h1 */
+
+    /* --- Line-height ---
+       Two distinct roles: paragraph readability vs. tight display type. */
+    --leading-body: 1.6;   /* base body copy */
+    --leading-tight: 0.95; /* large hero heading */
+
+    /* --- Letter-spacing (uppercase "kicker" labels) --- */
+    --tracking-wide: 0.08em;   /* hero-kicker, section-kicker */
+    --tracking-normal: 0.06em; /* meta-row dt */
+
+    /* --- Motion --- */
+    --transition-fast: 0.2s ease; /* hover state on pill buttons */
+
+    /* --- Stacking order ---
+       Named for intent (what it does), not magnitude. */
+    --z-header: 10;      /* sticky site header sits above page content */
+    --z-photo-back: 0;   /* offset background block behind avatar */
+    --z-photo-front: 1;  /* avatar image, on top of the offset block */
+
+    /* --- Layout measures --- */
+    --measure-container: 960px;      /* .container max-width */
+    --measure-bio: 480px;            /* bio paragraph max-width, for readable line length */
+    --measure-photo-mobile: 220px;   /* hero-photo max-width on small screens */
+    --card-min-project: 260px;       /* project/credential grid column floor */
+    --card-min-experience: 240px;    /* experience grid column floor */
+    --aspect-square: 1 / 1;          /* avatar */
+    --aspect-photo: 4 / 3;           /* credential-image */
+
+    /* --bp-mobile: 600px  — documentation only.
+       Custom properties can't be used inside @media conditions,
+       so the literal 600px below must be kept in sync with this value by hand. */
 }
 
 /* ==========================================================================
@@ -35,7 +103,7 @@ body {
     font-family: -apple-system, "VT323", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background-color: var(--paper);
-    line-height: 1.6;
+    line-height: var(--leading-body);
 }
 
 h1, .brand {
@@ -55,9 +123,9 @@ h3 {
    ========================================================================== */
 
 .container {
-    max-width: 960px;
+    max-width: var(--measure-container);
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 var(--space-2xl);
 }
 
 /* ==========================================================================
@@ -67,7 +135,7 @@ h3 {
 .site-header {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: var(--z-header);
     background-color: var(--paper);
     border-bottom: var(--line-width) solid var(--line);
 }
@@ -76,11 +144,11 @@ h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 1.5rem;
+    padding: var(--space-2xl) var(--space-2xl);
 }
 
 .brand {
-    font-size: 1.3rem;
+    font-size: var(--font-xl);
     font-weight: 700;
     color: var(--ink);
     text-decoration: none;
@@ -88,13 +156,13 @@ h3 {
 
 .site-header nav {
     display: flex;
-    gap: 2rem;
+    gap: var(--space-3xl);
 }
 
 .site-header nav a {
     color: var(--ink);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: var(--font-base);
 }
 
 /* ==========================================================================
@@ -102,7 +170,7 @@ h3 {
    ========================================================================== */
 
 .hero {
-    padding: 4.5rem 0 5rem;
+    padding: var(--space-6xl) 0 var(--space-7xl);
 }
 
 .hero-grid {
@@ -111,7 +179,7 @@ h3 {
     grid-template-areas:
         "identity photo"
         "details  photo";
-    gap: 1.5rem 3rem;
+    gap: var(--space-2xl) var(--space-4xl);
 }
 
 .hero-identity {
@@ -123,37 +191,37 @@ h3 {
 }
 
 .hero-kicker {
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    font-size: var(--font-sm);
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--accent-dark);
     font-weight: 700;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--space-md);
 }
 
 .hero-identity h1 {
-    font-size: clamp(3rem, 7vw, 5rem);
-    line-height: 0.95;
+    font-size: var(--font-hero);
+    line-height: var(--leading-tight);
 }
 
 .bio {
     color: var(--text-muted);
-    max-width: 480px;
-    margin-bottom: 1.5rem;
+    max-width: var(--measure-bio);
+    margin-bottom: var(--space-2xl);
 }
 
 .meta-list {
     display: flex;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+    gap: var(--space-3xl);
+    margin-bottom: var(--space-2xl);
 }
 
 .meta-row dt {
-    font-size: 0.75rem;
+    font-size: var(--font-2xs);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-normal);
     color: var(--text-muted);
-    margin-bottom: 0.15rem;
+    margin-bottom: var(--space-3xs);
 }
 
 .meta-row dd {
@@ -162,22 +230,22 @@ h3 {
 
 .social-links {
     display: flex;
-    gap: 1.0rem;
+    gap: var(--space-lg);
     flex-wrap: wrap;
 }
 
 .social-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 1.0rem;
+    gap: var(--space-xs);
+    font-size: var(--font-md);
     font-weight: 400;
     text-decoration: none;
     color: var(--paper);
     background-color: var(--accent);
     border-radius: var(--radius);
-    padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    padding: var(--space-sm) var(--space-lg2);
+    transition: background-color var(--transition-fast);
 }
 
 .social-link:hover {
@@ -185,7 +253,7 @@ h3 {
 }
 
 .social-link ion-icon {
-	font-size: 1.2 rem;
+	font-size: var(--font-lg);
 	color: var(--paper);
 }
 
@@ -201,27 +269,27 @@ h3 {
 
 .photo-block {
     position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
+    top: var(--space-xl);
+    left: var(--space-xl);
     width: 100%;
     height: 100%;
     background-color: var(--accent);
     border-radius: var(--radius);
-    z-index: 0;
+    z-index: var(--z-photo-back);
 }
 
 .avatar {
     position: relative;
-    z-index: 1;
+    z-index: var(--z-photo-front);
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--aspect-square);
     object-fit: cover;
     border-radius: var(--radius);
     border: var(--line-width) solid var(--ink);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 600px) { /* keep in sync with documented --bp-mobile */
     .hero-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
@@ -231,7 +299,7 @@ h3 {
     }
 
     .hero-photo {
-        max-width: 220px;
+        max-width: var(--measure-photo-mobile);
     }
 
     .social-links {
@@ -244,69 +312,69 @@ h3 {
    ========================================================================== */
 
 .projects {
-	padding: 4rem 0;
+	padding: var(--space-5xl) 0;
 }
 
 .projects h2 {
-	font-size: 2rem;
-	margin-bottom: 2rem;
+	font-size: var(--font-2xl);
+	margin-bottom: var(--space-3xl);
 }
 
 .project-grid {
     justify-content: flex-start;
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-	gap: 1.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(var(--card-min-project), 1fr));
+	gap: var(--space-2xl);
 }
 
 .project-card {
 	background-color: var(--paper);
 	border: var(--line-width) solid var(--line);
 	border-radius: var(--radius);
-	padding: 1.5rem;
+	padding: var(--space-xl);
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
+	gap: var(--space-md);
 }
 
 .project-card h3 {
-	font-size: 1.2rem;
+	font-size: var(--font-lg);
 }
 
 .project-card p {
 	color: var(--text-muted);
-	font-size: 0.9rem;
+	font-size: var(--font-sm2);
 }
 
 .tag-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.4rem;
+	gap: var(--space-xs);
 }
 
 .tag {
-	font-size: 1.0rem;
+	font-size: var(--font-md);
 	font-weight: 400;
 	background-color: var(--line);
 	color: var(--paper);
-	padding: 0.25rem 0.6rem;
+	padding: var(--space-2xs) var(--space-sm2);
 	border-radius: var(--radius);
 }
 
 .project-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--space-xs);
 	align-self: flex-start;
-	margin-top: 0.5rem;
-	font-size: 0.85rem;
+	margin-top: var(--space-sm);
+	font-size: var(--font-sm);
 	font-weight: 400;
 	text-decoration: none;
 	color: var(--paper);
 	background-color: var(--accent);
 	border-radius: var(--radius);
-	padding: 0.5rem 1.1rem;
-	transition: background-color 0.2s ease;
+	padding: var(--space-sm) var(--space-lg2);
+	transition: background-color var(--transition-fast);
 }
 
 .project-link:hover {
@@ -314,7 +382,7 @@ h3 {
 }
 
 .project-link ion-icon {
-	font-size: 1.2 rem;
+	font-size: var(--font-lg);
 	color: var(--paper);
 }
 
@@ -327,30 +395,30 @@ h3 {
    ========================================================================== */
 
 .experience-section {
-    padding: 4rem 0;
+    padding: var(--space-5xl) 0;
 }
 
 .section-kicker {
     color: var(--accent-dark);
-    font-size: 0.8rem;
+    font-size: var(--font-xs);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
 }
 
 .experience-section h1 {
-    margin: 0.4rem 0 1.5rem;
-    font-size: 2rem;
+    margin: var(--space-xs) 0 var(--space-2xl);
+    font-size: var(--font-2xl);
 }
 
 .experience-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-experience), 1fr));
+    gap: var(--space-lg);
 }
 
 .experience-card {
-    padding: 1.25rem;
+    padding: var(--space-xl);
     background-color: var(--paper);
     border: var(--line-width) solid var(--line);
     border-radius: var(--radius);
@@ -358,14 +426,14 @@ h3 {
 
 .experience-category {
     color: var(--accent-dark);
-    font-size: 0.75rem;
+    font-size: var(--font-2xs);
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .experience-card h2 {
-    margin: 0.5rem 0;
-    font-size: 1.25rem;
+    margin: var(--space-sm) 0;
+    font-size: var(--font-lg2);
 }
 
 .experience-description,
@@ -374,8 +442,8 @@ h3 {
 }
 
 .experience-status {
-    margin-top: 1rem;
-    font-size: 0.85rem;
+    margin-top: var(--space-lg);
+    font-size: var(--font-sm);
     font-weight: 600;
 }
 
@@ -384,28 +452,28 @@ h3 {
    ========================================================================== */
 
 .skills {
-	padding: 4rem 0;
+	padding: var(--space-5xl) 0;
 	border-top: var(--line-width) solid var(--line);
 }
 
 .skills h2 {
-	font-size: 2rem;
-	margin-bottom: 1.5rem;
+	font-size: var(--font-2xl);
+	margin-bottom: var(--space-2xl);
 }
 
 .skill-list {
 	list-style: none;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.6rem;
+	gap: var(--space-sm2);
 }
 
 .skill-tag {
-	font-size: 0.85rem;
+	font-size: var(--font-sm);
 	font-weight: 400;
 	background-color: var(--line);
 	color: var(--paper);
-	padding: 0.5rem 1rem;
+	padding: var(--space-sm) var(--space-lg);
 	border-radius: var(--radius);
 }
 
@@ -414,33 +482,33 @@ h3 {
    ========================================================================== */
 
 .credential-section {
-    padding: 4rem 0; /* same as .projects */
+    padding: var(--space-5xl) 0; /* same as .projects */
 }
 
 .credential-section h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem; /* same as .projects h2 */
+    font-size: var(--font-2xl);
+    margin-bottom: var(--space-3xl); /* same as .projects h2 */
 }
 
 .credential-grid {
     justify-content: flex-start;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* same minmax as .project-grid */
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-project), 1fr)); /* same floor as .project-grid */
+    gap: var(--space-2xl);
 }
 
 .credential-card {
     background-color: var(--paper);
     border: var(--line-width) solid var(--line);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: var(--space-xl);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-md);
 }
 
 .credential-card h2 {
-    font-size: 1.2rem; /* matches .project-card h3 sizing, since credential title is h2 not h3 */
+    font-size: var(--font-lg); /* matches .project-card h3 sizing, since credential title is h2 not h3 */
 }
 
 .credential-issuer,
@@ -448,12 +516,12 @@ h3 {
 .credential-date,
 .credential-expiry {
     color: var(--text-muted);
-    font-size: 0.9rem; /* placeholder — same as .project-card p for now */
+    font-size: var(--font-sm2); /* placeholder — same as .project-card p for now */
 }
 
 .credential-image {
     width: 100%;
-    aspect-ratio: 4/3;
+    aspect-ratio: var(--aspect-photo);
     object-fit: cover;
     border-radius: var(--radius);
 }
@@ -461,17 +529,17 @@ h3 {
 .credential-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--space-xs);
     align-self: flex-start;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
+    margin-top: var(--space-sm);
+    font-size: var(--font-sm);
     font-weight: 400;
     text-decoration: none;
     color: var(--paper);
     background-color: var(--accent);
     border-radius: var(--radius);
-    padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    padding: var(--space-sm) var(--space-lg2);
+    transition: background-color var(--transition-fast);
 }
 
 .credential-link:hover {
@@ -483,8 +551,8 @@ h3 {
    ========================================================================== */
 
 .site-footer {
-    padding: 1.5rem;
+    padding: var(--space-2xl);
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: var(--font-sm);
     border-top: var(--line-width) solid var(--line);
 }
