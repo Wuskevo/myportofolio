@@ -14,7 +14,8 @@ html {
     --accent: #4c6ac6;
     --accent-dark: #283f84;
     --line: #d68707;
-    --text-muted: #6b6459;
+    --line-width: 2px;
+    --text-muted: #3f2701;
     --radius: 16px;
 }
 
@@ -48,7 +49,7 @@ h3 {
     top: 0;
     z-index: 10;
     background-color: var(--paper);
-    border-bottom: 2px solid var(--line);
+    border-bottom: var(--line-width) solid var(--line);
 }
 
 .site-header .container {
@@ -184,14 +185,14 @@ h3 {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: var(--radius);
-    border: 3px solid var(--ink);
+    border: var(--line-width) solid var(--ink);
 }
 
 .site-footer {
     padding: 1.5rem;
     color: var(--text-muted);
     font-size: 0.85rem;
-    border-top: 2px solid var(--line);
+    border-top: var(--line-width) solid var(--line);
 }
 
 @media (max-width: 600px) {
@@ -284,7 +285,7 @@ h3 {
 
 .experience {
 	padding: 4rem 0;
-	border-top: 2px solid var(--line);
+	border-top: var(--line-width) solid var(--line);
 }
 
 .experience h2 {
@@ -337,7 +338,7 @@ h3 {
 
 .skills {
 	padding: 4rem 0;
-	border-top: 2px solid var(--line);
+	border-top: var(--line-width) solid var(--line);
 }
 
 .skills h2 {
@@ -381,7 +382,7 @@ h3 {
 
 .experience-section {
     padding: 4rem 0;
-    border-top: 1px solid var(--line);
+    /* border-top: var(--line-width) solid var(--line); */
 }
 
 .section-kicker {
@@ -405,8 +406,8 @@ h3 {
 
 .experience-card {
     padding: 1.25rem;
-    background-color: #fff;
-    border: 1px solid var(--line);
+    background-color: var(--paper);
+    border: var(--line-width) solid var(--line);
     border-radius: var(--radius);
 }
 
