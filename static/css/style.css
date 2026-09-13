@@ -87,9 +87,11 @@ html {
     --measure-photo-mobile: 220px;   /* hero-photo max-width on small screens */
     --card-min-project: 260px;       /* project/credential grid column floor */
     --card-min-experience: 240px;    /* experience grid column floor */
-    --card-height-credential: 720px; /* credential card height */
+    --card-height-credential: 840px; /* credential card height */
     --aspect-square: 1 / 1;          /* avatar */
     --aspect-photo: 1 / 1;           /* credential-image */
+    --line-clamp-credential-desc: 6; /* credential description line clamp, should ... if overflow */
+    --line-clamp-credential-title: 2;/* credential description line clamp, should ... if overflow */
 
     /* --bp-mobile: 600px  — documentation only.
        Custom properties can't be used inside @media conditions,
@@ -507,7 +509,7 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    height: var(--credential-card-height); 
+    height: var(--card-height-credential); 
     overflow: hidden; 
 }
 
@@ -521,6 +523,31 @@ h3 {
 .credential-expiry {
     color: var(--text-muted);
     font-size: var(--font-sm2); /* placeholder — same as .project-card p for now */
+}
+
+.credential-card h2 {
+    font-size: var(--font-lg);
+    display: -webkit-box;
+    height: calc(var(--line-clamp-credential-title) * var(--leading-body) * 1em);
+    -webkit-line-clamp: var(--line-clamp-credential-title); 
+    line-clamp: var(--line-clamp-credential-title);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.credential-issuer {
+    color: var(--line);
+    font-size: var(--font-md);
+}
+
+.credential-description {
+    /* fixed line-count clamp */
+    display: -webkit-box;
+    height: calc(var(--line-clamp-credential-desc) * var(--leading-body) * 1em);
+    -webkit-line-clamp: var(--line-clamp-credential-desc); 
+    line-clamp: var(--line-clamp-credential-desc);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .credential-image {
