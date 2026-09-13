@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -7,6 +11,10 @@
 html {
     scroll-behavior: smooth;
 }
+
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
 
 :root {
     --ink: #170a01;
@@ -18,6 +26,10 @@ html {
     --text-muted: #3f2701;
     --radius: 16px;
 }
+
+/* ==========================================================================
+   Base typography
+   ========================================================================== */
 
 body {
     font-family: -apple-system, "VT323", Roboto, Helvetica, Arial, sans-serif;
@@ -38,11 +50,19 @@ h3 {
     font-family: "VT323", monospace;
 }
 
+/* ==========================================================================
+   Layout helpers
+   ========================================================================== */
+
 .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 0 1.5rem;
 }
+
+/* ==========================================================================
+   Site header / nav
+   ========================================================================== */
 
 .site-header {
     position: sticky;
@@ -76,6 +96,10 @@ h3 {
     text-decoration: none;
     font-size: 0.95rem;
 }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
 
 .hero {
     padding: 4.5rem 0 5rem;
@@ -160,6 +184,15 @@ h3 {
     background-color: var(--accent-dark);
 }
 
+.social-link ion-icon {
+	font-size: 1.2 rem;
+	color: var(--paper);
+}
+
+.social-link:hover ion-icon, .social-link:hover span {
+	color: var(--paper);
+}
+
 .hero-photo {
     grid-area: photo;
     align-self: center;
@@ -188,13 +221,6 @@ h3 {
     border: var(--line-width) solid var(--ink);
 }
 
-.site-footer {
-    padding: 1.5rem;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    border-top: var(--line-width) solid var(--line);
-}
-
 @media (max-width: 600px) {
     .hero-grid {
         grid-template-columns: 1fr;
@@ -212,6 +238,10 @@ h3 {
         justify-content: flex-start;
     }
 }
+
+/* ==========================================================================
+   Projects
+   ========================================================================== */
 
 .projects {
 	padding: 4rem 0;
@@ -283,6 +313,23 @@ h3 {
 	background-color: var(--accent-dark);
 }
 
+.project-link ion-icon {
+	font-size: 1.2 rem;
+	color: var(--paper);
+}
+
+.project-link:hover ion-icon, .project:hover span {
+	color: var(--paper);
+}
+
+/* ==========================================================================
+   Experience
+   NOTE: two implementations below (timeline-based and card-based).
+   Confirm which one your HTML actually uses and remove the other.
+   ========================================================================== */
+
+/* --- Version A: timeline list --- */
+
 .experience {
 	padding: 4rem 0;
 	border-top: var(--line-width) solid var(--line);
@@ -336,49 +383,7 @@ h3 {
 	}
 }
 
-.skills {
-	padding: 4rem 0;
-	border-top: var(--line-width) solid var(--line);
-}
-
-.skills h2 {
-	font-size: 2rem;
-	margin-bottom: 1.5rem;
-}
-
-.skill-list {
-	list-style: none;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.6rem;
-}
-
-.skill-tag {
-	font-size: 0.85rem;
-	font-weight: 400;
-	background-color: var(--line);
-	color: var(--paper);
-	padding: 0.5rem 1rem;
-	border-radius: var(--radius);
-}
-
-.social-link ion-icon {
-	font-size: 1.2 rem;
-	color: var(--paper);
-}
-
-.social-link:hover ion-icon, .social-link:hover span {
-	color: var(--paper);
-}
-
-.project-link ion-icon {
-	font-size: 1.2 rem;
-	color: var(--paper);
-}
-
-.project-link:hover ion-icon, .project:hover span {
-	color: var(--paper);
-}
+/* --- Version B: card grid --- */
 
 .experience-section {
     padding: 4rem 0;
@@ -432,4 +437,45 @@ h3 {
     margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+/* ==========================================================================
+   Skills
+   ========================================================================== */
+
+.skills {
+	padding: 4rem 0;
+	border-top: var(--line-width) solid var(--line);
+}
+
+.skills h2 {
+	font-size: 2rem;
+	margin-bottom: 1.5rem;
+}
+
+.skill-list {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.skill-tag {
+	font-size: 0.85rem;
+	font-weight: 400;
+	background-color: var(--line);
+	color: var(--paper);
+	padding: 0.5rem 1rem;
+	border-radius: var(--radius);
+}
+
+/* ==========================================================================
+   Site footer
+   ========================================================================== */
+
+.site-footer {
+    padding: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: var(--line-width) solid var(--line);
 }
