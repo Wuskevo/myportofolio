@@ -324,70 +324,10 @@ h3 {
 
 /* ==========================================================================
    Experience
-   NOTE: two implementations below (timeline-based and card-based).
-   Confirm which one your HTML actually uses and remove the other.
    ========================================================================== */
-
-/* --- Version A: timeline list --- */
-
-.experience {
-	padding: 4rem 0;
-	border-top: var(--line-width) solid var(--line);
-}
-
-.experience h2 {
-	font-size: 2rem;
-	margin-bottom: 2rem;
-}
-
-.timeline {
-	list-style: none;
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
-}
-
-.timeline-item {
-	display: grid;
-	grid-template-columns: 160px 1fr;
-	gap: 1.5rem;
-}
-
-.timeline-date {
-	font-size: 0.85rem;
-	font-weight: 400;
-	color: var(--accent-dark);
-}
-
-.timeline-content h3 {
-	font-size: 1.1rem;
-	margin-bottom: 0.25rem;
-}
-
-.timeline-org {
-	font-size: 0.85rem;
-	font-weight: 400;
-	color: var(--text-muted);
-	margin-bottom: 0.5rem;
-}
-
-.timeline-content p:last-child {
-	color: var(--text-muted);
-	font-size: 0.9rem;
-}
-
-@media (max-width: 600px) {
-	.timeline-item {
-		grid-template-columns: 1fr;
-		gap: 0.35rem;
-	}
-}
-
-/* --- Version B: card grid --- */
 
 .experience-section {
     padding: 4rem 0;
-    /* border-top: var(--line-width) solid var(--line); */
 }
 
 .section-kicker {
