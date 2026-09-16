@@ -95,6 +95,9 @@ html {
 
     /* --- Form tokens --- */
     --color-error: #b42318;
+    --surface-white: #ffffff;
+    --overlay-dark: rgba(28, 25, 23, 0.58);
+    --shadow-soft: 0 1rem 3rem rgba(28, 25, 23, 0.22);
     --form-field-padding-y: 0.7rem;
     --form-field-padding-x: 0.8rem;
     --form-field-gap: 0.4rem;
@@ -458,6 +461,205 @@ h3 {
     font-weight: 600;
 }
 
+.experience-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-3xl);
+}
+
+.experience-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.experience-grid .experience-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.experience-image,
+.project-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: var(--line-width) solid var(--ink);
+    border-radius: var(--radius);
+}
+
+.experience-header h1 {
+    margin-bottom: 0;
+}
+
+.experience-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.experience-add-button span {
+    font-size: var(--font-lg2);
+    line-height: 1;
+}
+
+.experience-search {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-3xl);
+}
+
+.experience-search__input {
+    width: 100%;
+    min-width: 0;
+    padding: var(--form-field-padding-y) var(--form-field-padding-x);
+    border: var(--line-width) solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-white);
+    color: var(--ink);
+    font: inherit;
+}
+
+.experience-search__input:focus {
+    outline: var(--line-width) solid var(--accent);
+    border-color: var(--accent);
+}
+
+.experience-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+    margin-top: var(--space-lg);
+}
+
+.experience-actions .button {
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+.experience-card-actions {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+.hide {
+    display: none !important;
+}
+
+.experience-actions .experience-status {
+    margin-top: 0;
+}
+
+.experience-delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-xl);
+    border: 0;
+    background: transparent;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+}
+
+.experience-delete-modal:popover-open {
+    display: flex;
+}
+
+.experience-delete-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    background: var(--overlay-dark);
+    cursor: default;
+}
+
+.experience-delete-modal__content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 480px);
+    padding: var(--space-3xl);
+    background: var(--paper);
+    border: var(--line-width) solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.experience-delete-modal__content h2 {
+    margin: 0 0 var(--space-md);
+    font-size: var(--font-2xl);
+}
+
+.experience-delete-modal__close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.experience-delete-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-3xl);
+}
+
+@media (max-width: 600px) {
+    .experience-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .experience-add-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .experience-search {
+        flex-direction: column;
+    }
+
+    .experience-search .button {
+        width: 100%;
+    }
+
+    .experience-delete-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .experience-delete-modal__content {
+        width: 100%;
+        padding: var(--space-2xl);
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .experience-delete-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .experience-delete-modal__actions .button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 /* ==========================================================================
    Skills
    ========================================================================== */
@@ -668,4 +870,10 @@ h3 {
 
 .button-secondary {
     background: var(--accent);
+    color: var(--paper);
+}
+
+.button-danger {
+    background: var(--color-error);
+    color: var(--ink);
 }

@@ -19,9 +19,12 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from main.views import get_experience_json
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls")),
+    path("api/experience/", get_experience_json, name="get_experience_json")
 ]   
 
 if settings.DEBUG:
