@@ -1,163 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+<!--<header class="site-header">
+  <div class="container">
+    <a href="{% url 'main:show_main' %}" , class="brand">{{ name }}</a>
+    <nav>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+    </nav>
+    <nav>
+      <a href="{% url 'main:show_main' %}">Profile</a>
+      <a href="{% url 'main:show_experience' %}">Experience</a>
+      <a href="{% url 'main:show_credential' %}">Credentials</a>
+    </nav>
+  </div>
+</header>-->
 
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ name }} - Portfolio</title>
-    
-    <!-- Fonts -->
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-
-    <!-- Ionicons: module script for modern browsers -->
-	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-	<!-- Ionicons: fallback for older browsers -->
-	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
-    <link rel="stylesheet" href="/static/css/style.css">
-    
-</head>
-
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="#profile" class="brand">{{ name }}</a>
-            <nav>
-                <a href="#projects">Projects</a>
-                <a href="#skills">Skills</a>
-            </nav>
-            <nav>
-                <a href="#profile">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_credential' %}">Credentials</a>
-            </nav>
+{% block content %}
+<main>
+  <section class="hero" id="profile">
+    <div class="container hero-grid">
+      <div class="hero-identity">
+        <p class="hero-kicker">
+          Computer Science &middot; Universitas Indonesia
+        </p>
+        <h1>{{ name }}</h1>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-block"></div>
+        <img
+          class="avatar"
+          src="/static/img/Clement Kevin Tanadi.png"
+          alt="Photo of {{ name }}"
+        />
+      </div>
+      <div class="hero-details">
+        <p class="bio">{{ bio }}</p>
+        <dl class="meta-list">
+          <div class="meta-row">
+            <dt>NPM</dt>
+            <dd>{{ npm }}</dd>
+          </div>
+          <div class="meta-row">
+            <dt>Program</dt>
+            <dd>{{ study_program }}</dd>
+          </div>
+        </dl>
+        <div class="social-links">
+          <a href="https://github.com/Wuskevo" class="social-link">
+            <ion-icon name="logo-github"></ion-icon>
+            <span>GitHub</span>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/clement-kevin-tanadi-376697379/"
+            class="social-link"
+          >
+            <ion-icon name="logo-linkedin"></ion-icon>
+            <span>LinkedIn</span>
+          </a>
+          <a href="https://wuskevo.itch.io" class="social-link">
+            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
+            <span>Itch</span>
+          </a>
+          <a href="mailto:kevtanadi03@gmail.com" class="social-link">
+            <ion-icon name="mail-outline"></ion-icon>
+            <span>Email</span>
+          </a>
         </div>
-    </header>
+      </div>
+    </div>
+  </section>
 
-    <main>
-        <section class="hero" id="profile">
-            <div class="container hero-grid">
-                <div class="hero-identity">
-                    <p class="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
-                    <h1>{{ name }}</h1>
-                </div>
-                <div class="hero-photo">
-                    <div class="photo-block"></div>
-                    <img class="avatar" src="/static/img/Clement Kevin Tanadi.png" alt="Photo of {{ name }}"> 
-                </div>
-                <div class="hero-details">
-                    <p class="bio">{{ bio }}</p>
-                    <dl class="meta-list">
-                        <div class="meta-row">
-                            <dt>NPM</dt>
-                            <dd>{{ npm }}</dd>
-                        </div>
-                        <div class="meta-row">
-                            <dt>Program</dt>
-                            <dd>{{ study_program }}</dd>
-                        </div>
-                    </dl>
-                    <div class="social-links">
-                        <a href="https://github.com/Wuskevo" class="social-link">
-                            <ion-icon name="logo-github"></ion-icon>
-                            <span>GitHub</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/clement-kevin-tanadi-376697379/" class="social-link">
-                            <ion-icon name="logo-linkedin"></ion-icon>
-                            <span>LinkedIn</span>
-                        </a>
-                        <a href="https://wuskevo.itch.io" class="social-link">
-                            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
-                            <span>Itch</span>
-                        </a>
-                        <a href="mailto:kevtanadi03@gmail.com" class="social-link">
-                            <ion-icon name="mail-outline"></ion-icon>
-                            <span>Email</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <section class="projects" id="projects">
+    <div class="container">
+      <h2>Projects</h2>
+      <div class="project-grid">
+        <article class="project-card">
+          <h3>Nabla's Ascent</h3>
+          <p>Ascend a dark tower full of killer robots.</p>
+          <div class="tag-list">
+            <span class="tag">Godot</span>
+            <span class="tag">2D</span>
+            <span class="tag">Shooter</span>
+            <span class="tag">Platformer</span>
+            <span class="tag">Roguelike</span>
+          </div>
+          <a href="https://htsdfisy.itch.io/nablas-ascent" class="project-link">
+            <span>Check out on Itch.io</span>
+            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
+          </a>
+        </article>
 
-        <section class="projects" id="projects">
-            <div class="container">
-                <h2>Projects</h2>
-                <div class="project-grid">
+        <article class="project-card">
+          <h3>Red's Elemental Duel</h3>
+          <p>Trigger chaotic elemental chain reactions upon golem mayhem.</p>
+          <div class="tag-list">
+            <span class="tag">Godot</span>
+            <span class="tag">2D</span>
+            <span class="tag">Puzzle</span>
+            <span class="tag">Arcade</span>
+          </div>
+          <a
+            href="https://aksaindo1834.itch.io/reds-elemental-duel"
+            class="project-link"
+          >
+            <span>Check out on Itch.io</span>
+            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
 
-                    <article class="project-card">
-                        <h3>Nabla's Ascent</h3>
-                        <p>Ascend a dark tower full of killer robots.</p>
-                        <div class="tag-list">
-                            <span class="tag">Godot</span>
-                            <span class="tag">2D</span>
-                            <span class="tag">Shooter</span>
-                            <span class="tag">Platformer</span>
-                            <span class="tag">Roguelike</span>
-                        </div>
-                        <a href="https://htsdfisy.itch.io/nablas-ascent" class="project-link">
-                            <span>Check out on Itch.io</span>
-                            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
-                        </a>
-                    </article>
-
-                    <article class="project-card">
-                        <h3>Red's Elemental Duel</h3>
-                        <p>Trigger chaotic elemental chain reactions upon golem mayhem.</p>
-                        <div class="tag-list">
-                            <span class="tag">Godot</span>
-                            <span class="tag">2D</span>
-                            <span class="tag">Puzzle</span>
-                            <span class="tag">Arcade</span>
-                        </div>    
-                        <a href="https://aksaindo1834.itch.io/reds-elemental-duel" class="project-link">
-                            <span>Check out on Itch.io</span>
-                            <ion-icon src="/static/icons/itch-io.svg"></ion-icon>
-                        </a>
-                    </article>
-
-                </div>
-            </div>
-        </section>
-    
-        <!-- <section class="experience" id="experience">
-            <div class="container">
-                <h2>Experience</h2>
-                <ol class="timeline">
-                    <li class="timeline-item">
-                        <div class="timeline-date">2025 &ndash; Present</div>
-                        <div class="timeline-content">
-                            <h3>Competitive Programming Coach</h3>
-                            <p class="timeline-org">KokoCoder</p>
-                            <p>Mentored aspiring competitive programmers onsite and remote. Taught fundamental algorithms and techniques in problem-solving</p>
-                        </div>
-                    </li>
-                </ol>
-            </div>
-        </section> -->
-
-        <section class="skills" id="skills">
-            <div class="container">
-                <h2>Skills</h2>
-                <ul class="skill-list">
-                    <li class="skill-tag">C++</li>
-                    <li class="skill-tag">Python</li>
-                    <li class="skill-tag">Java</li>
-                    <li class="skill-tag">Godot</li>
-                    <li class="skill-tag">Git</li>
-                </ul>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
-</body>
-</html>
+  <section class="skills" id="skills">
+    <div class="container">
+      <h2>Skills</h2>
+      <ul class="skill-list">
+        <li class="skill-tag">C++</li>
+        <li class="skill-tag">Python</li>
+        <li class="skill-tag">Java</li>
+        <li class="skill-tag">Godot</li>
+        <li class="skill-tag">Git</li>
+      </ul>
+    </div>
+  </section>
+</main>
+{% endblock content %}
