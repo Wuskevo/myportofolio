@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from main.models import Experience, Credential
-from main.forms import ExperienceForm
+from main.forms import CredentialForm, ExperienceForm
 
 def show_main(request):
     context = {
@@ -37,12 +37,22 @@ def show_experience(request):
     return render(request, "experience.html", context)
 
 
-def show_credential(request):
+def show_credentials(request):
+    json_response = get_credentials_json(request)
+    credentials = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    credentials_by_category = {}
+    for deserialized_credential in credentials:
+        credential = deserialized_credential.object
+        credentials_by_category.setdefault(credential.category, []).append(credential)
+
     context = {
         "name": "Clement Kevin Tanadi",
-        "credentials_by_category": Credential.grouped_by_category(),
+        "credentials_by_category": credentials_by_category,
     }
-    return render(request, "credential.html", context)
+    return render(request, "credentials.html", context)
 
 def create_experience(request):
     form = ExperienceForm(request.POST or None)
@@ -77,3 +87,63 @@ def delete_experience(request, experience_id):
         return redirect("main:show_experience")
 
     return redirect("main:show_experience")
+
+
+def create_credentials(request):
+    form = CredentialForm(request.POST or None, request.FILES or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "New credential successfully added!")
+        return redirect("main:show_credentials")
+
+    context = {
+        "name": "Clement Kevin Tanadi",
+        "form": form,
+        "form_title": "Add New Credential",
+        "submit_label": "Add Credential",
+    }
+    return render(request, "credentials_form.html", context)
+
+
+def update_credentials(request, credential_id):
+    credential = get_object_or_404(Credential, pk=credential_id)
+    form = CredentialForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=credential,
+    )
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Credential successfully updated!")
+        return redirect("main:show_credentials")
+
+    context = {
+        "name": "Clement Kevin Tanadi",
+        "form": form,
+        "form_title": "Update Credential",
+        "submit_label": "Update Credential",
+    }
+    return render(request, "credentials_form.html", context)
+
+
+def delete_credentials(request, credential_id):
+    credential = get_object_or_404(Credential, pk=credential_id)
+
+    if request.method == "POST":
+        credential.delete()
+        messages.success(request, "Credential successfully removed!")
+
+    return redirect("main:show_credentials")
+
+
+def get_credentials_json(request):
+    title_query = request.GET.get("title", "").strip()
+    credentials = Credential.objects.all()
+
+    if title_query:
+        credentials = credentials.filter(title__icontains=title_query)
+
+    credentials_json = serializers.serialize("json", credentials)
+    return HttpResponse(credentials_json, content_type="application/json")

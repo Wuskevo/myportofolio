@@ -71,9 +71,9 @@ class CredentialsTest(TestCase):
             )
 
     def test_credentials_page_accessible_and_correct_template(self):
-        response = self.client.get(reverse("main:show_credential"))  
+        response = self.client.get(reverse("main:show_credentials"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "credential.html")  
+        self.assertTemplateUsed(response, "credentials.html")
 
     def test_credentials_appear_grouped_by_category(self):
         category_headings = {
@@ -83,15 +83,18 @@ class CredentialsTest(TestCase):
             "scholarship": "My Scholarships",
         }
 
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
         for category, credential in self.credentials.items():
             self.assertContains(response, credential.title)
             self.assertContains(response, credential.issuer)
             self.assertContains(response, category_headings[category])
 
+        self.assertContains(response, 'title="Remove credential"', count=4)
+        self.assertContains(response, "Edit Credential", count=4)
+
     def test_empty_category_shows_placeholder(self):
         self.credentials["certification"].delete()
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
 
         self.assertContains(response, "No credentials have been added yet.", count=1)
         # The other three categories still have their credential rendered
@@ -101,7 +104,7 @@ class CredentialsTest(TestCase):
 
     def test_all_categories_empty(self):
         Credential.objects.all().delete()
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
 
         self.assertContains(response, "No credentials have been added yet.", count=4)
 
@@ -111,12 +114,12 @@ class CredentialsTest(TestCase):
         self.credentials["scholarship"].delete()
         cred = self.credentials["certification"]
 
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
         self.assertContains(response, "Never expires")
 
         cred.expiry_date = timezone.now()
         cred.save()
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
         self.assertContains(response, "Expires")
         self.assertNotContains(response, "Never expires")
 
@@ -126,12 +129,12 @@ class CredentialsTest(TestCase):
         self.credentials["scholarship"].delete()
         cred = self.credentials["certification"]
 
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
         self.assertContains(response, "Verification not provided")
 
         cred.credential_url = "https://example.com/verify"
         cred.save()
-        response = self.client.get(reverse("main:show_credential"))
+        response = self.client.get(reverse("main:show_credentials"))
         self.assertContains(response, f'href="{cred.credential_url}"')
         self.assertNotContains(response, "Verification not provided")
 
@@ -173,3 +176,64 @@ class CredentialsTest(TestCase):
             form.cleaned_data["credential_url"],
             "https://example.com/verify",
         )
+
+    def test_credentials_json_endpoint_returns_credentials(self):
+        response = self.client.get(reverse("main:get_credentials_json"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertContains(response, self.credentials["certification"].title)
+
+    def test_credentials_json_endpoint_filters_by_title(self):
+        response = self.client.get(
+            reverse("main:get_credentials_json"),
+            {"title": "award"},
+        )
+
+        self.assertContains(response, self.credentials["award"].title)
+        self.assertNotContains(response, self.credentials["certification"].title)
+
+    def test_create_credentials(self):
+        response = self.client.post(
+            reverse("main:create_credentials"),
+            {
+                "title": "New Credential",
+                "description": "A new credential.",
+                "category": "certification",
+                "issuer": "Test Issuer",
+                "date_received": "2026-09-18",
+                "expiry_date": "",
+                "credential_url": "https://example.com/new",
+            },
+        )
+
+        self.assertRedirects(response, reverse("main:show_credentials"))
+        self.assertTrue(Credential.objects.filter(title="New Credential").exists())
+
+    def test_update_credentials(self):
+        credential = self.credentials["certification"]
+        response = self.client.post(
+            reverse("main:update_credentials", args=[credential.id]),
+            {
+                "title": "Updated Credential",
+                "description": credential.description,
+                "category": credential.category,
+                "issuer": credential.issuer,
+                "date_received": "2026-09-18",
+                "expiry_date": "",
+                "credential_url": "",
+            },
+        )
+
+        self.assertRedirects(response, reverse("main:show_credentials"))
+        credential.refresh_from_db()
+        self.assertEqual(credential.title, "Updated Credential")
+
+    def test_delete_credentials(self):
+        credential = self.credentials["certification"]
+        response = self.client.post(
+            reverse("main:delete_credentials", args=[credential.id])
+        )
+
+        self.assertRedirects(response, reverse("main:show_credentials"))
+        self.assertFalse(Credential.objects.filter(pk=credential.id).exists())
