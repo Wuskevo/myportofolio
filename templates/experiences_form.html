@@ -7,7 +7,7 @@
       <h1>Add New Experience</h1>
       <form
         method="post"
-        action="{% url 'main:create_experience' %}"
+        action="{% url 'main:create_experiences' %}"
         class="experience-form"
       >
         {% csrf_token %} {% for field in form %}
@@ -20,7 +20,7 @@
         {% endfor %}
         <button type="submit" class="button">Add Experience</button>
         <a
-          href="{% url 'main:show_experience' %}"
+          href="{% url 'main:show_experiences' %}"
           class="button button-secondary"
           >Cancel</a
         >

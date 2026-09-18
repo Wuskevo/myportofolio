@@ -20,7 +20,7 @@ class MainTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
         self.assertNotContains(response, self.experience.title)
-        self.assertContains(response, f'href="{reverse("main:show_experience")}"')
+        self.assertContains(response, f'href="{reverse("main:show_experiences")}"')
 
     def test_nonexistent_page_returns_404(self):
         response = self.client.get("/a-page-that-does-not-exist/")
@@ -33,10 +33,10 @@ class MainTest(TestCase):
         self.assertTrue(self.experience.is_ongoing)
 
     def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(reverse("main:show_experiences"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "experience.html")
+        self.assertTemplateUsed(response, "experiences.html")
         self.assertContains(response, self.experience.title)
         self.assertContains(response, self.experience.description)
         self.assertContains(response, "Part-Time")
@@ -45,14 +45,14 @@ class MainTest(TestCase):
 
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(reverse("main:show_experiences"))
 
         self.assertContains(response, "No experience has been added yet.")
 
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
         self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(reverse("main:show_experiences"))
 
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Completed")

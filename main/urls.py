@@ -2,13 +2,14 @@ from django.urls import path
 
 from main.views import (
     create_credentials,
-    create_experience,
+    create_experiences,
     delete_credentials,
-    delete_experience,
+    delete_experiences,
     get_credentials_json,
+    get_experiences_json,
     show_main,
     show_credentials,
-    show_experience,
+    show_experiences,
     update_credentials,
 )
 
@@ -16,11 +17,12 @@ app_name = "main"
 
 urlpatterns = [
     path("", show_main, name="show_main"),
-    path("experience/", show_experience, name="show_experience"),
+    path("experiences/", show_experiences, name="show_experiences"),
+    path("experiences/json/", get_experiences_json, name="get_experiences_json"),
     path("credentials/", show_credentials, name="show_credentials"),
 	path("credentials/json/", get_credentials_json, name="get_credentials_json"),
-	path("experience/add/", create_experience, name="create_experience"),
-	path("experience/<uuid:experience_id>/delete/", delete_experience, name="delete_experience"),
+    path("experiences/add/", create_experiences, name="create_experiences"),
+    path("experiences/<uuid:experience_id>/delete/", delete_experiences, name="delete_experiences"),
     path("credentials/add/", create_credentials, name="create_credentials"),
     path(
         "credentials/<uuid:credential_id>/edit/",
