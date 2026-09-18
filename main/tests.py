@@ -58,6 +58,41 @@ class MainTest(TestCase):
         self.assertContains(response, "Completed")
         self.assertNotContains(response, "Ongoing")
 
+    def test_update_experiences(self):
+        response = self.client.post(
+            reverse("main:update_experiences", args=[self.experience.id]),
+            {
+                "title": "Updated Teaching Assistant",
+                "description": "Updated experience description.",
+                "category": "research",
+                "thumbnail": "https://example.com/updated.jpg",
+                "ended_at": "",
+            },
+        )
+
+        self.assertRedirects(response, reverse("main:show_experiences"))
+        self.experience.refresh_from_db()
+        self.assertEqual(self.experience.title, "Updated Teaching Assistant")
+        self.assertEqual(self.experience.category, "research")
+
+    def test_update_experience_form_posts_to_update_view(self):
+        response = self.client.get(
+            reverse("main:update_experiences", args=[self.experience.id])
+        )
+
+        self.assertContains(
+            response,
+            f'action="{reverse("main:update_experiences", args=[self.experience.id])}"',
+        )
+
+    def test_experience_page_has_update_link(self):
+        response = self.client.get(reverse("main:show_experiences"))
+
+        self.assertContains(
+            response,
+            reverse("main:update_experiences", args=[self.experience.id]),
+        )
+
 class CredentialsTest(TestCase):
     def setUp(self):
         self.credentials = {}
