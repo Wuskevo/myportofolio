@@ -10,6 +10,7 @@ from main.views import (
     show_main,
     show_credentials,
     show_experiences,
+    update_experiences,
     update_credentials,
 )
 
@@ -22,6 +23,11 @@ urlpatterns = [
     path("credentials/", show_credentials, name="show_credentials"),
 	path("credentials/json/", get_credentials_json, name="get_credentials_json"),
     path("experiences/add/", create_experiences, name="create_experiences"),
+    path(
+        "experiences/<uuid:experience_id>/edit/",
+        update_experiences,
+        name="update_experiences",
+    ),
     path("experiences/<uuid:experience_id>/delete/", delete_experiences, name="delete_experiences"),
     path("credentials/add/", create_credentials, name="create_credentials"),
     path(

@@ -1,13 +1,13 @@
 {% extends "base.html" %} {% block meta %}
-<title>Add Experience - {{ name }}</title>
+<title>{{ form_title|default:"Add Experience" }} - {{ name }}</title>
 {% endblock meta %} {% block content %}
 <main>
   <section class="experience-section">
     <div class="container">
-      <h1>Add New Experience</h1>
+      <h1>{{ form_title|default:"Add New Experience" }}</h1>
       <form
         method="post"
-        action="{% url 'main:create_experiences' %}"
+        action="{% if experience_id %}{% url 'main:update_experiences' experience_id %}{% else %}{% url 'main:create_experiences' %}{% endif %}"
         class="experience-form"
       >
         {% csrf_token %} {% for field in form %}
@@ -18,7 +18,9 @@
           {% endfor %}
         </div>
         {% endfor %}
-        <button type="submit" class="button">Add Experience</button>
+        <button type="submit" class="button">
+          {{ submit_label|default:"Add Experience" }}
+        </button>
         <a
           href="{% url 'main:show_experiences' %}"
           class="button button-secondary"
