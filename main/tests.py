@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from main.forms import CredentialForm
 from main.models import Experience, Credential
 
 
@@ -133,3 +134,42 @@ class CredentialsTest(TestCase):
         response = self.client.get(reverse("main:show_credential"))
         self.assertContains(response, f'href="{cred.credential_url}"')
         self.assertNotContains(response, "Verification not provided")
+
+    def test_credential_form_has_expected_fields(self):
+        form = CredentialForm()
+
+        self.assertEqual(
+            list(form.fields),
+            [
+                "title",
+                "description",
+                "category",
+                "issuer",
+                "date_received",
+                "expiry_date",
+                "credential_url",
+                "image",
+            ],
+        )
+        self.assertNotIn("id", form.fields)
+
+    def test_credential_form_validates_required_and_optional_fields(self):
+        form = CredentialForm(
+            data={
+                "title": "Django Developer Certificate",
+                "description": "A certificate for Django development.",
+                "category": "certification",
+                "issuer": "Django Software Foundation",
+                "date_received": "2026-09-18",
+                "expiry_date": "",
+                "credential_url": "https://example.com/verify",
+            }
+        )
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data["date_received"].year, 2026)
+        self.assertIsNone(form.cleaned_data["expiry_date"])
+        self.assertEqual(
+            form.cleaned_data["credential_url"],
+            "https://example.com/verify",
+        )
