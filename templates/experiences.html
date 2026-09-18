@@ -9,7 +9,7 @@
       <div class="experience-header">
         <h1>Experience</h1>
         <a
-          href="{% url 'main:create_experience' %}"
+          href="{% url 'main:create_experiences' %}"
           class="button experience-add-button"
         >
           <span aria-hidden="true">+</span>
@@ -19,7 +19,7 @@
 
       <form
         method="get"
-        action="{% url 'main:show_experience' %}"
+        action="{% url 'main:show_experiences' %}"
         class="experience-search"
       >
         <input
@@ -56,7 +56,7 @@
               {% else %}
               <p class="experience-status">Completed</p>
               {% endif %} 
-			  {% include "components/experience_delete_model.html" with experience=experience %}
+			  {% include "components/experiences_delete_modal.html" %}
             </div>
           </div>
         </article>

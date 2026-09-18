@@ -19,8 +19,8 @@ def show_main(request):
     return render(request, "index.html", context)
 
 
-def show_experience(request):
-    json_response = get_experience_json(request)
+def show_experiences(request):
+    json_response = get_experiences_json(request)
 
     experiences = serializers.deserialize(
         "json",
@@ -34,7 +34,7 @@ def show_experience(request):
         "experience_list": experiences,
         "title_query": title_query,
     }
-    return render(request, "experience.html", context)
+    return render(request, "experiences.html", context)
 
 
 def show_credentials(request):
@@ -54,21 +54,21 @@ def show_credentials(request):
     }
     return render(request, "credentials.html", context)
 
-def create_experience(request):
+def create_experiences(request):
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, "New experience successfully added!")
-        return redirect("main:show_experience")
+        return redirect("main:show_experiences")
 
     context = {
         "name": "Clement Kevin Tanadi",
         "form": form,
     }
-    return render(request, "experience_form.html", context)
+    return render(request, "experiences_form.html", context)
 
-def get_experience_json(request):
+def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all()
 
@@ -78,15 +78,15 @@ def get_experience_json(request):
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
-def delete_experience(request, experience_id):
+def delete_experiences(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
         experience.delete()
         messages.success(request, "Experience successfully removed!")
-        return redirect("main:show_experience")
+        return redirect("main:show_experiences")
 
-    return redirect("main:show_experience")
+    return redirect("main:show_experiences")
 
 
 def create_credentials(request):
