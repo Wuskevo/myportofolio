@@ -95,7 +95,6 @@ html {
 
     /* --- Form tokens --- */
     --color-error: #a7342c;
-    --surface-white: #ffffff;
     --overlay-dark: rgba(28, 25, 23, 0.58);
     --shadow-soft: 0 1rem 3rem rgba(28, 25, 23, 0.22);
     --form-field-padding-y: 0.7rem;
@@ -461,7 +460,7 @@ h3 {
     font-weight: 600;
 }
 
-.experience-header {
+.section-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -488,7 +487,7 @@ h3 {
     border-radius: var(--radius);
 }
 
-.experience-header h1 {
+.section-header h1 {
     margin-bottom: 0;
 }
 
@@ -503,19 +502,21 @@ h3 {
     line-height: 1;
 }
 
-.experience-search {
+/* Used by long search by title bars so far */
+.search-bar-1 {
     display: flex;
     gap: var(--space-md);
     margin-bottom: var(--space-3xl);
 }
 
-.experience-search__input {
+/* Input of [search-bar-1] */
+.search-input-1 {
     width: 100%;
     min-width: 0;
     padding: var(--form-field-padding-y) var(--form-field-padding-x);
     border: var(--line-width) solid var(--line);
     border-radius: var(--radius);
-    background: var(--surface-white);
+    background: var(--paper);
     color: var(--ink);
     font: inherit;
 }
@@ -621,21 +622,21 @@ h3 {
 }
 
 @media (max-width: 600px) {
-    .experience-header {
+    .section-header {
         align-items: flex-start;
         flex-direction: column;
     }
 
-    .experience-add-button {
+    .section-add-button {
         width: 100%;
         justify-content: center;
     }
 
-    .experience-search {
+    .section-search {
         flex-direction: column;
     }
 
-    .experience-search .button {
+    .section-search .button {
         width: 100%;
     }
 
@@ -769,7 +770,7 @@ h3 {
 .credential-image-placeholder {
     width: 100%;
     aspect-ratio: var(--aspect-photo);
-    background-color: var(--line); 
+    background-color: var(--ink); 
     border-radius: var(--radius);
 }
 

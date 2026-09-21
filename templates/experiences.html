@@ -6,7 +6,7 @@
 		<div class="container">
 			<p class="section-kicker">My journey so far</p>
 
-			<div class="experience-header">
+			<div class="section-header">
 				<h1>Experience</h1>
 				<a href="{% url 'main:create_experiences' %}" class="button experience-add-button">
 					<span aria-hidden="true">+</span>
@@ -14,9 +14,9 @@
 				</a>
 			</div>
 
-			<form method="get" action="{% url 'main:show_experiences' %}" class="experience-search">
+			<form method="get" action="{% url 'main:show_experiences' %}" class="search-bar-1">
 				<input type="search" name="title" value="{{ title_query }}" placeholder="Search by experience title"
-					class="experience-search__input" aria-label="Search by experience title" />
+					class="search-input-1" aria-label="Search by experience title" />
 				<button type="submit" class="button">Search</button>
 			</form>
 
