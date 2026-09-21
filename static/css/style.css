@@ -94,7 +94,7 @@ html {
     --line-clamp-credential-title: 2;/* credential description line clamp, should ... if overflow */
 
     /* --- Form tokens --- */
-    --color-error: #b42318;
+    --color-error: #a7342c;
     --surface-white: #ffffff;
     --overlay-dark: rgba(28, 25, 23, 0.58);
     --shadow-soft: 0 1rem 3rem rgba(28, 25, 23, 0.22);
@@ -525,7 +525,7 @@ h3 {
     border-color: var(--accent);
 }
 
-.experience-actions {
+.item-actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -533,7 +533,7 @@ h3 {
     margin-top: var(--space-lg);
 }
 
-.experience-actions .button {
+.item-actions .button {
     font-size: var(--font-sm);
     font-weight: 600;
 }
@@ -548,11 +548,11 @@ h3 {
     display: none !important;
 }
 
-.experience-actions .experience-status {
+.item-actions .experience-status {
     margin-top: 0;
 }
 
-.experience-delete-modal {
+.delete-modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -569,11 +569,11 @@ h3 {
     justify-content: center;
 }
 
-.experience-delete-modal:popover-open {
+.delete-modal:popover-open {
     display: flex;
 }
 
-.experience-delete-modal__backdrop {
+.delete-modal__backdrop {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -584,7 +584,7 @@ h3 {
     cursor: default;
 }
 
-.experience-delete-modal__content {
+.delete-modal__content {
     position: relative;
     z-index: 1;
     width: min(100%, 480px);
@@ -595,12 +595,12 @@ h3 {
     box-shadow: var(--shadow-soft);
 }
 
-.experience-delete-modal__content h2 {
+.delete-modal__content h2 {
     margin: 0 0 var(--space-md);
     font-size: var(--font-2xl);
 }
 
-.experience-delete-modal__close {
+.delete-modal__close {
     position: absolute;
     top: var(--space-lg);
     right: var(--space-lg);
@@ -613,7 +613,7 @@ h3 {
     cursor: pointer;
 }
 
-.experience-delete-modal__actions {
+.delete-modal__actions {
     display: flex;
     justify-content: flex-end;
     gap: var(--space-md);
@@ -639,22 +639,22 @@ h3 {
         width: 100%;
     }
 
-    .experience-delete-modal {
+    .delete-modal {
         align-items: flex-end;
         padding: 0;
     }
 
-    .experience-delete-modal__content {
+    .delete-modal__content {
         width: 100%;
         padding: var(--space-2xl);
         border-radius: var(--radius) var(--radius) 0 0;
     }
 
-    .experience-delete-modal__actions {
+    .delete-modal__actions {
         flex-direction: column-reverse;
     }
 
-    .experience-delete-modal__actions .button {
+    .delete-modal__actions .button {
         width: 100%;
         text-align: center;
     }
@@ -861,7 +861,7 @@ h3 {
     border-radius: var(--radius);
     padding: var(--space-md) var(--space-xl);
     background: var(--line);
-    color: var(--ink);
+    color: var(--paper);
     cursor: pointer;
     font: inherit;
     font-weight: 700;
@@ -875,5 +875,5 @@ h3 {
 
 .button-danger {
     background: var(--color-error);
-    color: var(--ink);
+    color: var(--paper);
 }
