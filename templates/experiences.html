@@ -55,8 +55,14 @@
               <p class="experience-status">Ongoing</p>
               {% else %}
               <p class="experience-status">Completed</p>
-              {% endif %} 
-			  {% include "components/experiences_delete_modal.html" %}
+              {% endif %}
+              <a
+                href="{% url 'main:update_experiences' experience.id %}"
+                class="button button-secondary"
+              >
+                Edit Experience
+              </a>
+              {% include "components/experiences_delete_modal.html" with experience=experience %}
             </div>
           </div>
         </article>

@@ -1,10 +1,4 @@
 <p class="experience-status">
-  <a
-    href="{% url 'main:update_experiences' experience.id %}"
-    class="button button-secondary"
-  >
-    Edit Experience
-  </a>
   <button
     type="button"
     class="button button-danger"
@@ -28,7 +22,7 @@
     class="experience-delete-modal__backdrop"
     popovertarget="delete-experience-{{ experience.id }}"
     popovertargetaction="hide"
-    aria-label="Tutup konfirmasi remove"
+    aria-label="Close remove confirmation"
   ></button>
   <div class="experience-delete-modal__content">
     <button
@@ -36,7 +30,7 @@
       class="experience-delete-modal__close"
       popovertarget="delete-experience-{{ experience.id }}"
       popovertargetaction="hide"
-      aria-label="Tutup konfirmasi remove"
+      aria-label="Close remove confirmation"
     >
       ×
     </button>
