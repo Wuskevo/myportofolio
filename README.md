@@ -33,3 +33,13 @@ Guidance in building the credential model and presentation with the use of pytho
 #### 004 / 2 - Style tokenization: https://claude.ai/share/45a651fa-1349-4588-b477-3a1dc7ae045c
 Drastically improved the quality of style.css by tokenizing magic values and documenting them
 
+## TODOS & Suggestions
+
+- ~~Keep experience and credential tests in separate files under `main/tests/`.~~
+- ~~Add a test whenever a CRUD action, JSON endpoint, or form field changes.~~
+- Consider sharing a queryset helper instead of calling JSON views from display views.
+- Extract repeated credential category markup into a reusable template component.
+- Add browser coverage for opening, cancelling, and confirming delete modals.
+- Run `python manage.py check` and `python manage.py test` before submitting changes.
+
+
