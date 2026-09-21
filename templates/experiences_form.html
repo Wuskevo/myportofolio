@@ -2,32 +2,26 @@
 <title>{{ form_title|default:"Add Experience" }} - {{ name }}</title>
 {% endblock meta %} {% block content %}
 <main>
-  <section class="experience-section">
-    <div class="container">
-      <h1>{{ form_title|default:"Add New Experience" }}</h1>
-      <form
-        method="post"
-        action="{% if experience_id %}{% url 'main:update_experiences' experience_id %}{% else %}{% url 'main:create_experiences' %}{% endif %}"
-        class="experience-form"
-      >
-        {% csrf_token %} {% for field in form %}
-        <div class="form-group">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }} {% for error in field.errors %}
-          <p class="form-error">{{ error }}</p>
-          {% endfor %}
-        </div>
-        {% endfor %}
-        <button type="submit" class="button">
-          {{ submit_label|default:"Add Experience" }}
-        </button>
-        <a
-          href="{% url 'main:show_experiences' %}"
-          class="button button-secondary"
-          >Cancel</a
-        >
-      </form>
-    </div>
-  </section>
+	<section class="experience-section">
+		<div class="container">
+			<h1>{{ form_title|default:"Add New Experience" }}</h1>
+			<form method="post"
+				action="{% if experience_id %}{% url 'main:update_experiences' experience_id %}{% else %}{% url 'main:create_experiences' %}{% endif %}"
+				class="experience-form">
+				{% csrf_token %} {% for field in form %}
+				<div class="form-group">
+					<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+					{{ field }} {% for error in field.errors %}
+					<p class="form-error">{{ error }}</p>
+					{% endfor %}
+				</div>
+				{% endfor %}
+				<button type="submit" class="button">
+					{{ submit_label|default:"Add Experience" }}
+				</button>
+				<a href="{% url 'main:show_experiences' %}" class="button button-secondary">Cancel</a>
+			</form>
+		</div>
+	</section>
 </main>
 {% endblock content %}
