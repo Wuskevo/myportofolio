@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% load static %}
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/listings.css' %}" />
+<link rel="stylesheet" href="{% static 'css/project-cards.css' %}" />
 {% endblock page_styles %}
 {% block meta %}
 <title>Projects - {{ name }}</title>
@@ -25,26 +26,9 @@
 				<button type="submit" class="button">Search</button>
 			</form>
 
-			<div class="listing-grid">
+			<div class="project-grid">
 				{% for project in project_list %}
-				<article class="listing-card">
-					<span class="listing-category">{{ project.tech_stack }}</span>
-					<h2>{{ project.title }}</h2>
-					<p class="listing-description">{{ project.description }}</p>
-
-					{% if project.project_url %}
-					<p class="listing-status">
-						<a href="{{ project.project_url }}">View Project</a>
-					</p>
-					{% endif %}
-
-					<div class="item-actions">
-						<a href="{% url 'main:update_project' project.id %}" class="button button-secondary">
-							Edit Project
-						</a>
-						{% include "components/projects_delete_modal.html" with project=project %}
-					</div>
-				</article>
+				{% include "components/project_card.html" with project=project heading_level="h2" show_actions=True %}
 				{% empty %}
 				<p class="empty-state">
 					No Projects added yet.

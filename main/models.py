@@ -90,3 +90,7 @@ class Project(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	@property
+	def tech_stack_items(self):
+		return [item.strip() for item in self.tech_stack.split(",") if item.strip()]

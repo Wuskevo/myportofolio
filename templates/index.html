@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'css/project-cards.css' %}" />
 {% endblock page_styles %} {% block content %}
 <main>
 	<section class="hero" id="profile">
@@ -52,36 +53,11 @@
 		<div class="container">
 			<h2>Projects</h2>
 			<div class="project-grid">
-				<article class="project-card">
-					<h3>Nabla's Ascent</h3>
-					<p>Ascend a dark tower full of killer robots.</p>
-					<div class="tag-list">
-						<span class="tag">Godot</span>
-						<span class="tag">2D</span>
-						<span class="tag">Shooter</span>
-						<span class="tag">Platformer</span>
-						<span class="tag">Roguelike</span>
-					</div>
-					<a href="https://htsdfisy.itch.io/nablas-ascent" class="project-link">
-						<span>Check out on Itch.io</span>
-						<ion-icon src="/static/icons/itch-io.svg"></ion-icon>
-					</a>
-				</article>
-
-				<article class="project-card">
-					<h3>Red's Elemental Duel</h3>
-					<p>Trigger chaotic elemental chain reactions upon golem mayhem.</p>
-					<div class="tag-list">
-						<span class="tag">Godot</span>
-						<span class="tag">2D</span>
-						<span class="tag">Puzzle</span>
-						<span class="tag">Arcade</span>
-					</div>
-					<a href="https://aksaindo1834.itch.io/reds-elemental-duel" class="project-link">
-						<span>Check out on Itch.io</span>
-						<ion-icon src="/static/icons/itch-io.svg"></ion-icon>
-					</a>
-				</article>
+				{% for project in project_list %}
+				{% include "components/project_card.html" with project=project heading_level="h3" %}
+				{% empty %}
+				<p class="empty-state">No projects have been added yet.</p>
+				{% endfor %}
 			</div>
 		</div>
 	</section>

@@ -20,6 +20,7 @@ def show_main(request):
         "npm": NPM,
         "study_program": STUDY_PROGRAM,
         "bio": BIO,
+        "project_list": Project.objects.order_by("title"),
     }
     return render(request, "index.html", context)
 

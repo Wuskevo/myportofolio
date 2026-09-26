@@ -1,0 +1,32 @@
+<article class="project-card">
+	{% if project.project_image_url %}
+	<img class="project-image" src="{{ project.project_image_url }}" alt="{{ project.title }}" />
+	{% endif %}
+	{% if heading_level == "h3" %}
+	<h3>{{ project.title }}</h3>
+	{% else %}
+	<h2>{{ project.title }}</h2>
+	{% endif %}
+	<p>{{ project.description }}</p>
+	{% if project.tech_stack_items %}
+	<div class="tag-list">
+		{% for item in project.tech_stack_items %}
+		<span class="tag">{{ item }}</span>
+		{% endfor %}
+	</div>
+	{% endif %}
+	{% if project.project_url %}
+	<a href="{{ project.project_url }}" class="project-link" target="_blank" rel="noopener">
+		<span>View project</span>
+		<ion-icon name="open-outline" aria-hidden="true"></ion-icon>
+	</a>
+	{% endif %}
+	{% if show_actions %}
+	<div class="item-actions project-card-actions">
+		<a href="{% url 'main:update_project' project.id %}" class="button button-secondary">
+			Edit Project
+		</a>
+		{% include "components/projects_delete_modal.html" with project=project %}
+	</div>
+	{% endif %}
+</article>

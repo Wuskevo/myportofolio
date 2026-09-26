@@ -1,0 +1,87 @@
+/* ========================================================================
+   Project cards shared by the home and projects pages
+   ======================================================================== */
+
+.project-grid {
+	justify-content: flex-start;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--card-min-project), 1fr));
+	gap: var(--space-2xl);
+}
+
+.project-card {
+	background-color: var(--paper);
+	border: var(--line-width) solid var(--line);
+	border-radius: var(--radius);
+	padding: var(--space-xl);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+}
+
+.project-card h2,
+.project-card h3 {
+	font-size: var(--font-lg);
+}
+
+.project-card p {
+	color: var(--text-muted);
+	font-size: var(--font-sm2);
+}
+
+.project-image {
+	display: block;
+	width: 100%;
+	height: auto;
+	border: var(--line-width) solid var(--ink);
+	border-radius: var(--radius);
+}
+
+.tag-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-xs);
+}
+
+.tag {
+	font-size: var(--font-md);
+	font-weight: 400;
+	background-color: var(--line);
+	color: var(--paper);
+	padding: var(--space-2xs) var(--space-sm2);
+	border-radius: var(--radius);
+}
+
+.project-link {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-xs);
+	align-self: flex-start;
+	margin-top: var(--space-sm);
+	font-size: var(--font-sm);
+	font-weight: 400;
+	text-decoration: none;
+	color: var(--paper);
+	background-color: var(--accent);
+	border-radius: var(--radius);
+	padding: var(--space-sm) var(--space-lg2);
+	transition: background-color var(--transition-fast);
+}
+
+.project-link:hover {
+	background-color: var(--accent-dark);
+}
+
+.project-link ion-icon {
+	font-size: var(--font-lg);
+	color: var(--paper);
+}
+
+.project-link:hover ion-icon,
+.project-card:hover span {
+	color: var(--paper);
+}
+
+.project-card-actions {
+	margin-top: auto;
+}

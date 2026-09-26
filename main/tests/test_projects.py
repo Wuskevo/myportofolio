@@ -88,6 +88,7 @@ class ProjectTests(TestCase):
 
     def test_update_project_changes_existing_record_without_duplicating(self):
         """Verify that an edit updates one project rather than creating another."""
+        project_count = Project.objects.count()
         response = self.client.post(
             reverse("main:update_project", args=[self.project.id]),
             {
@@ -103,7 +104,7 @@ class ProjectTests(TestCase):
         self.assertRedirects(response, reverse("main:show_projects"))
         self.project.refresh_from_db()
         self.assertEqual(self.project.title, "Updated Portfolio")
-        self.assertEqual(Project.objects.count(), 1)
+        self.assertEqual(Project.objects.count(), project_count)
 
     def test_delete_project(self):
         """Verify that posting the delete route removes the selected project."""

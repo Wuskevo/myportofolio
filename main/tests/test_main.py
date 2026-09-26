@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from main.models import Experience
+from main.models import Experience, Project
 
 
 class MainTests(TestCase):
@@ -26,6 +26,22 @@ class MainTests(TestCase):
         self.assertNotContains(response, self.experience.title)
         # See the assertion above: assertContains checks that expected page content exists.
         self.assertContains(response, f'href="{reverse("main:show_experiences")}"')
+
+    def test_main_page_displays_projects_from_the_database(self):
+        project = Project.objects.create(
+            title="Database Project",
+            description="Loaded from the projects table.",
+            tech_stack="Django, Python",
+            project_url="https://example.com/project",
+        )
+
+        response = self.client.get(reverse("main:show_main"))
+
+        self.assertContains(response, project.title)
+        self.assertContains(response, project.description)
+        self.assertContains(response, "Django")
+        self.assertContains(response, "Python")
+        self.assertContains(response, project.project_url)
 
     def test_nonexistent_page_returns_404(self):
         """Verify that an unknown URL returns a not-found response."""
