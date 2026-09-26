@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block meta %}
+<title>Projects - {{ name }}</title>
+{% endblock meta %}
+{% block content %}
+<main>
+	<section class="experience-section" id="experience">
+		<div class="container">
+			<p class="section-kicker">My Works and Craft</p>
+
+			<div class="section-header">
+				<h1>Projects</h1>
+				<a href="{% url 'main:create_project' %}" class="button experience-add-button">
+					<span aria-hidden="true">+</span>
+					Add Project
+				</a>
+			</div>
+
+			<form method="get" action="{% url 'main:show_projects' %}" class="search-bar-1">
+				<input type="search" name="title" value="{{ title_query }}" placeholder="Search by project title"
+					class="search-input-1" aria-label="Search by project title" />
+				<button type="submit" class="button">Search</button>
+			</form>
+
+			<div class="experience-grid">
+				{% for project in project_list %}
+				<article class="experience-card">
+					<span class="experience-category">{{ project.tech_stack }}</span>
+					<h2>{{ project.title }}</h2>
+					<p class="experience-description">{{ project.description }}</p>
+
+					{% if project.project_url %}
+					<p class="experience-status">
+						<a href="{{ project.project_url }}">View Project</a>
+					</p>
+					{% endif %}
+
+					<div class="item-actions">
+						<a href="{% url 'main:update_project' project.id %}" class="button button-secondary">
+							Edit Project
+						</a>
+						{% include "components/projects_delete_modal.html" with project=project %}
+					</div>
+				</article>
+				{% empty %}
+				<p class="empty-state">
+					No Projects added yet.
+				</p>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+</main>
+{% endblock content %}

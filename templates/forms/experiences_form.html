@@ -6,7 +6,7 @@
 		<div class="container">
 			<h1>{{ form_title|default:"Add New Experience" }}</h1>
 			<form method="post"
-				action="{% if experience_id %}{% url 'main:update_experiences' experience_id %}{% else %}{% url 'main:create_experiences' %}{% endif %}"
+				action="{% if experience_id %}{% url 'main:update_experience' experience_id %}{% else %}{% url 'main:create_experience' %}{% endif %}"
 				class="experience-form">
 				{% csrf_token %} {% for field in form %}
 				<div class="form-group">

@@ -1,3 +1,5 @@
+"""Tests for experience model behavior, pages, forms, and JSON endpoints."""
+
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -103,10 +105,10 @@ class ExperienceTests(TestCase):
         # See the earlier negative-content assertion: assertNotContains checks excluded content.
         self.assertNotContains(response, "Ongoing")
 
-    def test_update_experiences(self):
+    def test_update_experience(self):
         """Verify that posting the experience form updates the stored experience."""
         response = self.client.post(
-            reverse("main:update_experiences", args=[self.experience.id]),
+            reverse("main:update_experience", args=[self.experience.id]),
             {
                 "title": "Updated Teaching Assistant",
                 "description": "Updated experience description.",
@@ -127,13 +129,13 @@ class ExperienceTests(TestCase):
     def test_update_experience_form_posts_to_update_view(self):
         """Verify that the edit form posts to the experience update URL."""
         response = self.client.get(
-            reverse("main:update_experiences", args=[self.experience.id])
+            reverse("main:update_experience", args=[self.experience.id])
         )
 
         # See the content assertion above: assertContains checks rendered markup.
         self.assertContains(
             response,
-            f'action="{reverse("main:update_experiences", args=[self.experience.id])}"',
+            f'action="{reverse("main:update_experience", args=[self.experience.id])}"',
         )
 
     def test_experience_page_has_update_link(self):
@@ -143,13 +145,13 @@ class ExperienceTests(TestCase):
         # See the content assertion above: assertContains checks rendered markup.
         self.assertContains(
             response,
-            reverse("main:update_experiences", args=[self.experience.id]),
+            reverse("main:update_experience", args=[self.experience.id]),
         )
 
-    def test_delete_experiences(self):
+    def test_delete_experience(self):
         """Verify that posting the delete form removes an experience."""
         response = self.client.post(
-            reverse("main:delete_experiences", args=[self.experience.id])
+            reverse("main:delete_experience", args=[self.experience.id])
         )
 
         # See the redirect assertion above: assertRedirects verifies the destination URL.

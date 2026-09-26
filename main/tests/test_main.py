@@ -1,3 +1,5 @@
+"""Tests for the portfolio landing page and top-level routes."""
+
 from django.test import TestCase
 from django.urls import reverse
 

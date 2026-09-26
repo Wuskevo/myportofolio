@@ -8,7 +8,7 @@
 
 			<div class="section-header">
 				<h1>Experience</h1>
-				<a href="{% url 'main:create_experiences' %}" class="button experience-add-button">
+				<a href="{% url 'main:create_experience' %}" class="button experience-add-button">
 					<span aria-hidden="true">+</span>
 					Add Experience
 				</a>
@@ -23,13 +23,6 @@
 			<div class="experience-grid experience-grid">
 				{% for experience in experience_list %}
 				<article class="experience-card">
-					<!--{% if experience.thumbnail %}
-					<img
-					src="{{ experience.thumbnail }}"
-					alt="{{ experience.title }} thumbnail"
-					class="experience-image"
-					/>
-					{% endif %}-->
 					<span class="experience-category">
 						{{ experience.get_category_display }}
 					</span>
@@ -42,7 +35,7 @@
 					{% endif %}
 					<div class="experience-card-actions">
 						<div class="item-actions">
-							<a href="{% url 'main:update_experiences' experience.id %}" class="button button-secondary">
+							<a href="{% url 'main:update_experience' experience.id %}" class="button button-secondary">
 								Edit Experience
 							</a>
 							{% include "components/experiences_delete_modal.html" with experience=experience %}

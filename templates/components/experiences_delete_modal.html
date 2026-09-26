@@ -21,7 +21,7 @@
 				popovertargetaction="hide">
 				Cancel
 			</button>
-			<form method="post" action="{% url 'main:delete_experiences' experience.id %}">
+			<form method="post" action="{% url 'main:delete_experience' experience.id %}">
 				{% csrf_token %}
 				<button type="submit" class="button button-danger">Yes, remove</button>
 			</form>

@@ -19,13 +19,14 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from main.views import get_credentials_json, get_experiences_json
+from main.views import get_credentials_json, get_experiences_json, get_projects_json
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls")),
-    path("api/experiences/", get_experiences_json, name="get_experiences_json"),
     path("api/credentials/", get_credentials_json, name="get_credentials_json"),
+    path("api/experiences/", get_experiences_json, name="get_experiences_json"),
+    path("api/projects/", get_credentials_json, name="get_projects_json"),
 ]   
 
 if settings.DEBUG:

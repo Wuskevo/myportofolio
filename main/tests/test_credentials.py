@@ -1,3 +1,5 @@
+"""Tests for credential pages, model forms, and JSON endpoints."""
+
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -186,10 +188,10 @@ class CredentialTests(TestCase):
         # See the earlier negative-content assertion: assertNotContains checks excluded data.
         self.assertNotContains(response, self.credentials["certification"].title)
 
-    def test_create_credentials(self):
+    def test_create_credential(self):
         """Verify that posting the credential form creates a credential."""
         response = self.client.post(
-            reverse("main:create_credentials"),
+            reverse("main:create_credential"),
             {
                 "title": "New Credential",
                 "description": "A new credential.",
@@ -206,11 +208,11 @@ class CredentialTests(TestCase):
         # assertTrue checks that the query returns at least one matching object.
         self.assertTrue(Credential.objects.filter(title="New Credential").exists())
 
-    def test_update_credentials(self):
+    def test_update_credential(self):
         """Verify that posting the credential form updates a credential."""
         credential = self.credentials["certification"]
         response = self.client.post(
-            reverse("main:update_credentials", args=[credential.id]),
+            reverse("main:update_credential", args=[credential.id]),
             {
                 "title": "Updated Credential",
                 "description": credential.description,
@@ -232,7 +234,7 @@ class CredentialTests(TestCase):
         """Verify that posting the delete form removes a credential."""
         credential = self.credentials["certification"]
         response = self.client.post(
-            reverse("main:delete_credentials", args=[credential.id])
+            reverse("main:delete_credential", args=[credential.id])
         )
 
         # See the redirect assertion above: assertRedirects verifies the destination URL.
