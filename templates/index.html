@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock page_styles %} {% block content %}
 <main>
 	<section class="hero" id="profile">
 		<div class="container hero-grid">

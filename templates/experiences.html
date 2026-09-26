@@ -1,14 +1,16 @@
-{% extends "base.html" %} {% block meta %}
+{% extends "base.html" %} {% load static %} {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/listings.css' %}" />
+{% endblock page_styles %} {% block meta %}
 <title>Experience - {{ name }}</title>
 {% endblock meta %} {% block content %}
 <main>
-	<section class="experience-section" id="experience">
+	<section class="content-section" id="experience">
 		<div class="container">
 			<p class="section-kicker">My journey so far</p>
 
 			<div class="section-header">
 				<h1>Experience</h1>
-				<a href="{% url 'main:create_experience' %}" class="button experience-add-button">
+				<a href="{% url 'main:create_experience' %}" class="button section-add-button">
 					<span aria-hidden="true">+</span>
 					Add Experience
 				</a>
@@ -20,20 +22,20 @@
 				<button type="submit" class="button">Search</button>
 			</form>
 
-			<div class="experience-grid experience-grid">
+			<div class="listing-grid">
 				{% for experience in experience_list %}
-				<article class="experience-card">
-					<span class="experience-category">
+				<article class="listing-card">
+					<span class="listing-category">
 						{{ experience.get_category_display }}
 					</span>
 					<h2>{{ experience.title }}</h2>
-					<p class="experience-description">{{ experience.description }}</p>
+					<p class="listing-description">{{ experience.description }}</p>
 					{% if experience.is_ongoing %}
-					<p class="experience-status">Ongoing</p>
+					<p class="listing-status">Ongoing</p>
 					{% else %}
-					<p class="experience-status">Completed</p>
+					<p class="listing-status">Completed</p>
 					{% endif %}
-					<div class="experience-card-actions">
+					<div class="listing-card-actions">
 						<div class="item-actions">
 							<a href="{% url 'main:update_experience' experience.id %}" class="button button-secondary">
 								Edit Experience

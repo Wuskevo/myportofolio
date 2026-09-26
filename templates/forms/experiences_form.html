@@ -1,8 +1,10 @@
-{% extends "base.html" %} {% block meta %}
+{% extends "base.html" %} {% load static %} {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock page_styles %} {% block meta %}
 <title>{{ form_title|default:"Add Experience" }} - {{ name }}</title>
 {% endblock meta %} {% block content %}
 <main>
-	<section class="experience-section">
+	<section class="content-section">
 		<div class="container">
 			<h1>{{ form_title|default:"Add New Experience" }}</h1>
 			<form method="post"

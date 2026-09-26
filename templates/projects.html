@@ -1,16 +1,19 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/listings.css' %}" />
+{% endblock page_styles %}
 {% block meta %}
 <title>Projects - {{ name }}</title>
 {% endblock meta %}
 {% block content %}
 <main>
-	<section class="experience-section" id="experience">
+	<section class="content-section" id="projects">
 		<div class="container">
 			<p class="section-kicker">My Works and Craft</p>
 
 			<div class="section-header">
 				<h1>Projects</h1>
-				<a href="{% url 'main:create_project' %}" class="button experience-add-button">
+				<a href="{% url 'main:create_project' %}" class="button section-add-button">
 					<span aria-hidden="true">+</span>
 					Add Project
 				</a>
@@ -22,15 +25,15 @@
 				<button type="submit" class="button">Search</button>
 			</form>
 
-			<div class="experience-grid">
+			<div class="listing-grid">
 				{% for project in project_list %}
-				<article class="experience-card">
-					<span class="experience-category">{{ project.tech_stack }}</span>
+				<article class="listing-card">
+					<span class="listing-category">{{ project.tech_stack }}</span>
 					<h2>{{ project.title }}</h2>
-					<p class="experience-description">{{ project.description }}</p>
+					<p class="listing-description">{{ project.description }}</p>
 
 					{% if project.project_url %}
-					<p class="experience-status">
+					<p class="listing-status">
 						<a href="{{ project.project_url }}">View Project</a>
 					</p>
 					{% endif %}

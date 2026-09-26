@@ -1,0 +1,48 @@
+/* ========================================================================
+   Forms
+   ======================================================================== */
+
+.project-form {
+	width: 100%;
+	max-width: 100%;
+	margin-top: var(--space-3xl);
+}
+
+.form-group {
+	margin-bottom: var(--form-section-gap);
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: var(--form-field-gap);
+	font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+	width: 100%;
+	box-sizing: border-box;
+	padding: var(--form-field-padding-y) var(--form-field-padding-x);
+	border: var(--line-width) solid var(--line);
+	border-radius: var(--radius);
+	font: inherit;
+	background-color: var(--paper);
+	color: var(--ink);
+	transition:
+		border-color var(--transition-fast),
+		outline-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+	outline: var(--line-width) solid var(--line);
+	border-color: var(--line);
+}
+
+.form-error {
+	color: var(--color-error);
+	font-size: var(--font-sm);
+	margin-top: var(--space-xs);
+}

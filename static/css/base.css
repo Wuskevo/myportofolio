@@ -1,0 +1,271 @@
+/* ========================================================================
+   Reset
+   ======================================================================== */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+/* ========================================================================
+   Design tokens
+   ======================================================================== */
+
+:root {
+	/* --- Color --- */
+	--ink: #231104;
+	--paper: #f4dbb5;
+	--accent: #4c6ac6;
+	--accent-dark: #283f84;
+	--line: #d68707;
+	--text-muted: #3f2701;
+
+	/* --- Structural --- */
+	--line-width: 2px;
+	--radius: 16px;
+
+	/* --- Spacing scale ---
+       Named by size, not by where they're used, so the same token
+       can be reused anywhere that magnitude of space is needed. */
+	--space-3xs: 0.15rem;
+	/* meta-row dt bottom margin */
+	--space-2xs: 0.25rem;
+	/* tag / skill-tag vertical padding */
+	--space-xs: 0.4rem;
+	/* icon-to-label gap in pill links */
+	--space-sm: 0.5rem;
+	/* pill button vertical padding */
+	--space-sm2: 0.6rem;
+	/* skill-list gap; tag horizontal padding */
+	--space-md: 0.75rem;
+	/* card internal gap; bio bottom margin fraction */
+	--space-lg: 1rem;
+	/* listing-grid gap */
+	--space-lg2: 1.1rem;
+	/* pill button horizontal padding */
+	--space-xl: 1.25rem;
+	/* photo-block offset; card padding */
+	--space-2xl: 1.5rem;
+	/* container side padding; most section gaps */
+	--space-3xl: 2rem;
+	/* project/skills h2 bottom margin; meta-list gap */
+	--space-4xl: 3rem;
+	/* hero-grid column gap */
+	--space-5xl: 4rem;
+	/* vertical section padding (projects, experience, skills, credentials) */
+	--space-6xl: 4.5rem;
+	/* hero top padding */
+	--space-7xl: 5rem;
+	/* hero bottom padding */
+
+	/* --- Font-size scale ---
+       Kept separate from spacing: bumping type size shouldn't
+       silently bump layout spacing too. */
+	--font-2xs: 0.75rem;
+	/* meta-row dt label; listing-category label */
+	--font-xs: 0.8rem;
+	/* section-kicker */
+	--font-sm: 0.85rem;
+	/* nav links; social-link text; listing-status; credential-link */
+	--font-sm2: 0.9rem;
+	/* project-card / credential body copy */
+	--font-base: 0.95rem;
+	/* nav link default */
+	--font-md: 1rem;
+	/* social-link / tag text */
+	--font-lg: 1.2rem;
+	/* project-card h3; icon glyphs in pills */
+	--font-lg2: 1.25rem;
+	/* listing-card h2 */
+	--font-xl: 1.3rem;
+	/* .brand */
+	--font-2xl: 2rem;
+	/* all section h1/h2 headings */
+	--font-hero: clamp(3rem, 7vw, 5rem);
+	/* hero identity h1 */
+
+	/* --- Line-height ---
+       Two distinct roles: paragraph readability vs. tight display type. */
+	--leading-body: 1.6;
+	/* base body copy */
+	--leading-tight: 0.95;
+	/* large hero heading */
+
+	/* --- Letter-spacing (uppercase "kicker" labels) --- */
+	--tracking-wide: 0.08em;
+	/* hero-kicker, section-kicker */
+	--tracking-normal: 0.06em;
+	/* meta-row dt */
+
+	/* --- Motion --- */
+	--transition-fast: 0.2s ease;
+	/* hover state on pill buttons */
+
+	/* --- Stacking order ---
+       Named for intent (what it does), not magnitude. */
+	--z-header: 10;
+	/* sticky site header sits above page content */
+	--z-photo-back: 0;
+	/* offset background block behind avatar */
+	--z-photo-front: 1;
+	/* avatar image, on top of the offset block */
+
+	/* --- Layout measures --- */
+	--measure-container: 960px;
+	/* .container max-width */
+	--measure-bio: 480px;
+	/* bio paragraph max-width, for readable line length */
+	--measure-photo-mobile: 220px;
+	/* hero-photo max-width on small screens */
+	--card-min-project: 260px;
+	/* project/credential grid column floor */
+	--card-min-listing: 240px;
+	/* listing grid column floor */
+	--card-height-credential: 840px;
+	/* credential card height */
+	--aspect-square: 1 / 1;
+	/* avatar */
+	--aspect-photo: 1 / 1;
+	/* credential-image */
+	--line-clamp-credential-desc: 6;
+	/* credential description line clamp, should ... if overflow */
+	--line-clamp-credential-title: 2;
+	/* credential description line clamp, should ... if overflow */
+
+	/* --- Form tokens --- */
+	--color-error: #a7342c;
+	--overlay-dark: rgba(28, 25, 23, 0.58);
+	--shadow-soft: 0 1rem 3rem rgba(28, 25, 23, 0.22);
+	--form-field-padding-y: 0.7rem;
+	--form-field-padding-x: 0.8rem;
+	--form-field-gap: 0.4rem;
+	--form-section-gap: 1.25rem;
+
+	/* --bp-mobile: 600px  — documentation only.
+       Custom properties can't be used inside @media conditions,
+       so the literal 600px below must be kept in sync with this value by hand. */
+}
+
+/* ========================================================================
+   Base typography
+   ======================================================================== */
+
+body {
+	font-family: -apple-system, "VT323", Roboto, Helvetica, Arial, sans-serif;
+	color: var(--ink);
+	background-color: var(--paper);
+	line-height: var(--leading-body);
+}
+
+h1,
+.brand {
+	font-family: "VT323", -apple-system, sans-serif;
+}
+
+h2 {
+	font-family: "VT323", -apple-system, sans-serif;
+}
+
+h3 {
+	font-family: "VT323", monospace;
+}
+
+/* ========================================================================
+   Layout helpers
+   ======================================================================== */
+
+.container {
+	max-width: var(--measure-container);
+	margin: 0 auto;
+	padding: 0 var(--space-2xl);
+}
+
+.content-section {
+	padding: var(--space-5xl) 0;
+}
+
+.content-section h1 {
+	margin: var(--space-xs) 0 var(--space-2xl);
+	font-size: var(--font-2xl);
+}
+
+/* ========================================================================
+   Site header / nav
+   ======================================================================== */
+
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: var(--z-header);
+	background-color: var(--paper);
+	border-bottom: var(--line-width) solid var(--line);
+}
+
+.site-header .container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: var(--space-2xl) var(--space-2xl);
+}
+
+.brand {
+	font-size: var(--font-xl);
+	font-weight: 700;
+	color: var(--ink);
+	text-decoration: none;
+}
+
+.site-header nav {
+	display: flex;
+	gap: var(--space-3xl);
+}
+
+.site-header nav a {
+	color: var(--ink);
+	text-decoration: none;
+	font-size: var(--font-base);
+}
+
+/* ========================================================================
+   Site footer
+   ======================================================================== */
+
+.site-footer {
+	padding: var(--space-2xl);
+	color: var(--text-muted);
+	font-size: var(--font-sm);
+	border-top: var(--line-width) solid var(--line);
+}
+
+/* ========================================================================
+   Shared buttons
+   ======================================================================== */
+
+.button {
+	display: inline-block;
+	height: fit-content;
+	border: 0;
+	border-radius: var(--radius);
+	padding: var(--space-md) var(--space-xl);
+	background: var(--line);
+	color: var(--paper);
+	cursor: pointer;
+	font: inherit;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.button-secondary {
+	background: var(--accent);
+	color: var(--paper);
+}
+
+.button-danger {
+	background: var(--color-error);
+	color: var(--paper);
+}
