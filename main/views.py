@@ -20,6 +20,11 @@ BIO = (
     	"Currently working on indie games joining jams and competitions."
     )
 
+EDITOR_STR = "Editor"
+
+def is_editor_user(user):
+    return user.is_authenticated and user.groups.filter(name=EDITOR_STR).exists()
+
 def register(request):
     form = UserCreationForm(request.POST or None)
     
@@ -66,7 +71,8 @@ def show_main(request):
         "study_program": STUDY_PROGRAM,
         "bio": BIO,
         "project_list": Project.objects.order_by("title"),
-        "last_login": last_login
+        "last_login": last_login,
+        "is_editor": is_editor_user(request.user),
     }
     return render(request, "index.html", context)
 
@@ -74,8 +80,11 @@ def show_main(request):
 # Experiences CRUD with json data delivery
 #
 
+@login_required(login_url="/login/")
 def create_experience(request):
-    # TODO: Redirect anonymous users; restrict creation to owner (403 otherwise).
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -113,11 +122,15 @@ def show_experiences(request):
         "name": NAME,
         "experience_list": experiences,
         "title_query": title_query,
+        "is_editor": is_editor_user(request.user),
     }
     return render(request, "experiences.html", context)
 
+@login_required(login_url="/login/")
 def update_experience(request, experience_id):
-    # TODO: Redirect anonymous users; allow owner/Editor with change permission only.
+    if not request.user.is_superuser and not is_editor_user(request.user):
+        raise PermissionDenied
+
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -135,8 +148,11 @@ def update_experience(request, experience_id):
     }
     return render(request, "forms/experiences_form.html", context)
 
+@login_required(login_url="/login/")
 def delete_experience(request, experience_id):
-    # TODO: Redirect anonymous users; restrict deletion to owner (403 otherwise).
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
@@ -149,15 +165,23 @@ def delete_experience(request, experience_id):
 @login_required(login_url="/login/")
 @require_POST
 def toggle_experience_star(request, experience_id):
-    """TODO: Toggle this user's star and redirect to the experience list."""
-    raise NotImplementedError("Complete the experience star toggle.")
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.user in experience.starred_by.all():
+        experience.starred_by.remove(request.user)
+    else:
+        experience.starred_by.add(request.user)
+
+    return redirect("main:show_experiences")
 
 #
 # Credentials CRUD with json data delivery
 #
 
+@login_required(login_url="/login/") 
 def create_credential(request):
-    # TODO: Redirect anonymous users; restrict creation to owner (403 otherwise).
+    if not request.user.is_superuser:
+        raise PermissionDenied
 
     form = CredentialForm(request.POST or None, request.FILES or None)
 
@@ -198,11 +222,14 @@ def show_credentials(request):
     context = {
         "name": NAME,
         "credentials_by_category": credentials_by_category,
+        "is_editor": is_editor_user(request.user),
     }
     return render(request, "credentials.html", context)
 
+@login_required(login_url="/login/") 
 def update_credential(request, credential_id):
-    # TODO: Redirect anonymous users; allow owner/Editor with change permission only.
+    if not request.user.is_superuser and not is_editor_user(request.user):
+        raise PermissionDenied
     
     credential = get_object_or_404(Credential, pk=credential_id)
     form = CredentialForm(
@@ -223,9 +250,11 @@ def update_credential(request, credential_id):
         "submit_label": "Update Credential",
     }
     return render(request, "forms/credentials_form.html", context)
- 
+
+@login_required(login_url="/login/")  
 def delete_credential(request, credential_id):
-    # TODO: Redirect anonymous users; restrict deletion to owner (403 otherwise).
+    if not request.user.is_superuser:
+        raise PermissionDenied
     
     credential = get_object_or_404(Credential, pk=credential_id)
 
@@ -242,7 +271,6 @@ def delete_credential(request, credential_id):
 @login_required(login_url="/login/") 
 def create_project(request):
 
-    # TODO: Keep the owner-only policy explicit and test unauthorized requests.
     if not request.user.is_superuser: # checks if logged-in account is the superuser
         raise PermissionDenied # stops request with 403
 	
@@ -284,15 +312,14 @@ def show_projects(request):
         "name": NAME,
         "project_list": projects,
         "title_query": title_query,
+        "is_editor": is_editor_user(request.user),
     }
     return render(request, "projects.html", context)
 
 @login_required(login_url="/login/") 
 def update_project(request, project_id):
-    
-    # TODO: Permit Editors with main.change_project as well as the owner.
-    if not request.user.is_superuser: # checks if logged-in account is the superuser
-        raise PermissionDenied # stops request with 403
+    if not request.user.is_superuser and not is_editor_user(request.user):
+        raise PermissionDenied
     
     project = get_object_or_404(Project, pk=project_id)
     form = ProjectForm(
@@ -318,7 +345,6 @@ def update_project(request, project_id):
 @login_required(login_url="/login/") 
 def delete_project(request, project_id):
     
-    # TODO: Keep deletion exclusive to the portfolio owner.
     if not request.user.is_superuser: # checks if logged-in account is the superuser
         raise PermissionDenied # stops request with 403
 
