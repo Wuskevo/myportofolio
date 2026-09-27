@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from main.models import Experience, Credential, Project
 from main.forms import CredentialForm, ExperienceForm, ProjectForm
@@ -74,6 +75,7 @@ def show_main(request):
 #
 
 def create_experience(request):
+    # TODO: Redirect anonymous users; restrict creation to owner (403 otherwise).
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -115,6 +117,7 @@ def show_experiences(request):
     return render(request, "experiences.html", context)
 
 def update_experience(request, experience_id):
+    # TODO: Redirect anonymous users; allow owner/Editor with change permission only.
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -133,6 +136,7 @@ def update_experience(request, experience_id):
     return render(request, "forms/experiences_form.html", context)
 
 def delete_experience(request, experience_id):
+    # TODO: Redirect anonymous users; restrict deletion to owner (403 otherwise).
     experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
@@ -142,11 +146,18 @@ def delete_experience(request, experience_id):
 
     return redirect("main:show_experiences")
 
+@login_required(login_url="/login/")
+@require_POST
+def toggle_experience_star(request, experience_id):
+    """TODO: Toggle this user's star and redirect to the experience list."""
+    raise NotImplementedError("Complete the experience star toggle.")
+
 #
 # Credentials CRUD with json data delivery
 #
 
 def create_credential(request):
+    # TODO: Redirect anonymous users; restrict creation to owner (403 otherwise).
 
     form = CredentialForm(request.POST or None, request.FILES or None)
 
@@ -191,6 +202,7 @@ def show_credentials(request):
     return render(request, "credentials.html", context)
 
 def update_credential(request, credential_id):
+    # TODO: Redirect anonymous users; allow owner/Editor with change permission only.
     
     credential = get_object_or_404(Credential, pk=credential_id)
     form = CredentialForm(
@@ -213,6 +225,7 @@ def update_credential(request, credential_id):
     return render(request, "forms/credentials_form.html", context)
  
 def delete_credential(request, credential_id):
+    # TODO: Redirect anonymous users; restrict deletion to owner (403 otherwise).
     
     credential = get_object_or_404(Credential, pk=credential_id)
 
@@ -229,6 +242,7 @@ def delete_credential(request, credential_id):
 @login_required(login_url="/login/") 
 def create_project(request):
 
+    # TODO: Keep the owner-only policy explicit and test unauthorized requests.
     if not request.user.is_superuser: # checks if logged-in account is the superuser
         raise PermissionDenied # stops request with 403
 	
@@ -276,6 +290,7 @@ def show_projects(request):
 @login_required(login_url="/login/") 
 def update_project(request, project_id):
     
+    # TODO: Permit Editors with main.change_project as well as the owner.
     if not request.user.is_superuser: # checks if logged-in account is the superuser
         raise PermissionDenied # stops request with 403
     
@@ -303,6 +318,7 @@ def update_project(request, project_id):
 @login_required(login_url="/login/") 
 def delete_project(request, project_id):
     
+    # TODO: Keep deletion exclusive to the portfolio owner.
     if not request.user.is_superuser: # checks if logged-in account is the superuser
         raise PermissionDenied # stops request with 403
 

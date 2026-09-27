@@ -10,6 +10,7 @@
 
 			<div class="section-header">
 				<h1>Experience</h1>
+				{# TODO: Render this create action only for the portfolio owner. #}
 				<a href="{% url 'main:create_experience' %}" class="button section-add-button">
 					<span aria-hidden="true">+</span>
 					Add Experience
@@ -37,6 +38,8 @@
 					{% endif %}
 					<div class="listing-card-actions">
 						<div class="item-actions">
+							{# TODO: Add a CSRF-protected POST star form with count and user state. #}
+							{# TODO: Show edit only to owner/Editor; show delete only to owner. #}
 							<a href="{% url 'main:update_experience' experience.id %}" class="button button-secondary">
 								Edit Experience
 							</a>
