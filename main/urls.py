@@ -2,6 +2,11 @@ from django.urls import path
 
 from main.views import (
     
+    show_main,
+    register,
+    login_user,
+    logout_user,
+    
     create_credential,
     create_experience,
     create_project,
@@ -10,7 +15,6 @@ from main.views import (
     get_experiences_json,
     get_projects_json,
     
-    show_main,
     show_credentials,
     show_experiences,
     show_projects,
@@ -28,6 +32,9 @@ from main.views import (
 app_name = "main"
 
 urlpatterns = [
+    path("register/", register, name="register"),
+    path("login/", login_user, name="login"),
+    path("logout/", logout_user, name="logout"),
     path("", show_main, name="show_main"),
 	
     path("credentials/add/", create_credential, name="create_credential"),
