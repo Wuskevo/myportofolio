@@ -26,10 +26,12 @@
 	{% if show_actions %}
 	<div class="item-actions project-card-actions">
 		{% include "components/project_star.html" with project=project %}
-		{% if user.is_superuser %}
+		{% if user.is_superuser or is_editor %}
 		<a href="{% url 'main:update_project' project.id %}" class="button button-secondary">
 			Edit Project
 		</a>
+		{% endif %}
+		{% if user.is_superuser %}
 		{% include "components/projects_delete_modal.html" with project=project %}
 		{% endif %}
 	</div>

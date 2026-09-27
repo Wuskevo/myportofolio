@@ -10,11 +10,12 @@
 
 			<div class="section-header">
 				<h1>Experience</h1>
-				{# TODO: Render this create action only for the portfolio owner. #}
+				{% if user.is_superuser %}
 				<a href="{% url 'main:create_experience' %}" class="button section-add-button">
 					<span aria-hidden="true">+</span>
 					Add Experience
 				</a>
+				{% endif %}
 			</div>
 
 			<form method="get" action="{% url 'main:show_experiences' %}" class="search-bar-1">
@@ -38,12 +39,15 @@
 					{% endif %}
 					<div class="listing-card-actions">
 						<div class="item-actions">
-							{# TODO: Add a CSRF-protected POST star form with count and user state. #}
-							{# TODO: Show edit only to owner/Editor; show delete only to owner. #}
+							{% include "components/experience_star.html" with experience=experience %}
+							{% if user.is_superuser or is_editor %}
 							<a href="{% url 'main:update_experience' experience.id %}" class="button button-secondary">
 								Edit Experience
 							</a>
+							{% endif %}
+							{% if user.is_superuser %}
 							{% include "components/experiences_delete_modal.html" with experience=experience %}
+							{% endif %}
 						</div>
 					</div>
 				</article>

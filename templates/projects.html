@@ -14,10 +14,12 @@
 
 			<div class="section-header">
 				<h1>Projects</h1>
+				{% if user.is_superuser %}
 				<a href="{% url 'main:create_project' %}" class="button section-add-button">
 					<span aria-hidden="true">+</span>
 					Add Project
 				</a>
+				{% endif %}
 			</div>
 
 			<form method="get" action="{% url 'main:show_projects' %}" class="search-bar-1">
