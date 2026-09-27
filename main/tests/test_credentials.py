@@ -1,14 +1,15 @@
 """Tests for credential pages, model forms, and JSON endpoints."""
 
-from django.test import TestCase
+from django.contrib.auth.models import Group, Permission, User
 from django.urls import reverse
 from django.utils import timezone
 
 from main.forms import CredentialForm
 from main.models import Credential
+from main.tests.base import BasePortfolioTestCase
 
 
-class CredentialTests(TestCase):
+class CredentialTests(BasePortfolioTestCase):
     def setUp(self):
         self.credentials = {}
         for category, _ in Credential.CREDENTIAL_CATEGORIES:
@@ -46,9 +47,39 @@ class CredentialTests(TestCase):
             # See the assertion above: assertContains checks rendered content.
             self.assertContains(response, category_headings[category])
 
-        # See the content assertion above: assertContains also supports occurrence counts.
+        self.assertNotContains(response, 'title="Remove credential"')
+        self.assertNotContains(response, "Edit Credential")
+        self.assertNotContains(response, reverse("main:create_credential"))
+
+    def test_editor_sees_credential_edit_but_not_create_or_delete(self):
+        editor = User.objects.create_user(username="editor", password="password")
+        permission = Permission.objects.get(
+            content_type__app_label="main",
+            codename="change_credential",
+        )
+        editor_group = Group.objects.create(name="Editor")
+        editor_group.permissions.add(permission)
+        editor.groups.add(editor_group)
+        self.client.force_login(editor)
+
+        response = self.client.get(reverse("main:show_credentials"))
+
+        self.assertContains(response, "Edit Credential", count=4)
+        self.assertNotContains(response, 'title="Remove credential"')
+        self.assertNotContains(response, reverse("main:create_credential"))
+
+    def test_superuser_sees_all_credential_actions(self):
+        owner = User.objects.create_superuser(
+            username="owner",
+            email="owner@example.com",
+            password="password",
+        )
+        self.client.force_login(owner)
+
+        response = self.client.get(reverse("main:show_credentials"))
+
+        self.assertContains(response, reverse("main:create_credential"))
         self.assertContains(response, 'title="Remove credential"', count=4)
-        # See the assertion above: assertContains verifies repeated rendered content.
         self.assertContains(response, "Edit Credential", count=4)
 
     def test_credentials_page_displays_deserialized_json_data(self):
@@ -190,6 +221,7 @@ class CredentialTests(TestCase):
 
     def test_create_credential(self):
         """Verify that posting the credential form creates a credential."""
+        self.login_as_owner()
         response = self.client.post(
             reverse("main:create_credential"),
             {
@@ -210,6 +242,7 @@ class CredentialTests(TestCase):
 
     def test_update_credential(self):
         """Verify that posting the credential form updates a credential."""
+        self.login_as_owner()
         credential = self.credentials["certification"]
         response = self.client.post(
             reverse("main:update_credential", args=[credential.id]),
@@ -232,6 +265,7 @@ class CredentialTests(TestCase):
 
     def test_delete_credentials(self):
         """Verify that posting the delete form removes a credential."""
+        self.login_as_owner()
         credential = self.credentials["certification"]
         response = self.client.post(
             reverse("main:delete_credential", args=[credential.id])

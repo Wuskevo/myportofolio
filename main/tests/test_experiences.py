@@ -1,14 +1,15 @@
 """Tests for experience model behavior, pages, forms, and JSON endpoints."""
 
-from django.test import TestCase
+from django.contrib.auth.models import Group, Permission, User
 from django.urls import reverse
 from django.utils import timezone
 
 from main.forms import ExperienceForm
 from main.models import Experience
+from main.tests.base import BasePortfolioTestCase
 
 
-class ExperienceTests(TestCase):
+class ExperienceTests(BasePortfolioTestCase):
     def setUp(self):
         self.experience = Experience.objects.create(
             title="PBP Teaching Assistant",
@@ -107,6 +108,7 @@ class ExperienceTests(TestCase):
 
     def test_update_experience(self):
         """Verify that posting the experience form updates the stored experience."""
+        self.login_as_owner()
         response = self.client.post(
             reverse("main:update_experience", args=[self.experience.id]),
             {
@@ -128,6 +130,7 @@ class ExperienceTests(TestCase):
 
     def test_update_experience_form_posts_to_update_view(self):
         """Verify that the edit form posts to the experience update URL."""
+        self.login_as_owner()
         response = self.client.get(
             reverse("main:update_experience", args=[self.experience.id])
         )
@@ -138,18 +141,71 @@ class ExperienceTests(TestCase):
             f'action="{reverse("main:update_experience", args=[self.experience.id])}"',
         )
 
-    def test_experience_page_has_update_link(self):
-        """Verify that each experience card exposes its edit link."""
+    def test_anonymous_user_does_not_see_experience_actions(self):
+        """Visitors can read experiences but do not see account-only controls."""
         response = self.client.get(reverse("main:show_experiences"))
 
-        # See the content assertion above: assertContains checks rendered markup.
+        self.assertNotContains(response, reverse("main:create_experience"))
+        self.assertNotContains(
+            response,
+            reverse("main:update_experience", args=[self.experience.id]),
+        )
+        self.assertNotContains(
+            response,
+            reverse("main:delete_experience", args=[self.experience.id]),
+        )
+        self.assertNotContains(
+            response,
+            reverse("main:toggle_experience_star", args=[self.experience.id]),
+        )
+        self.assertContains(response, "★ 0")
+
+    def test_editor_sees_experience_edit_but_not_create_or_delete(self):
+        editor = User.objects.create_user(username="editor", password="password")
+        permission = Permission.objects.get(
+            content_type__app_label="main",
+            codename="change_experience",
+        )
+        editor_group = Group.objects.create(name="Editor")
+        editor_group.permissions.add(permission)
+        editor.groups.add(editor_group)
+        self.client.force_login(editor)
+
+        response = self.client.get(reverse("main:show_experiences"))
+
         self.assertContains(
             response,
             reverse("main:update_experience", args=[self.experience.id]),
         )
+        self.assertNotContains(response, reverse("main:create_experience"))
+        self.assertNotContains(
+            response,
+            reverse("main:delete_experience", args=[self.experience.id]),
+        )
+
+    def test_superuser_sees_all_experience_actions(self):
+        owner = User.objects.create_superuser(
+            username="owner",
+            email="owner@example.com",
+            password="password",
+        )
+        self.client.force_login(owner)
+
+        response = self.client.get(reverse("main:show_experiences"))
+
+        self.assertContains(response, reverse("main:create_experience"))
+        self.assertContains(
+            response,
+            reverse("main:update_experience", args=[self.experience.id]),
+        )
+        self.assertContains(
+            response,
+            reverse("main:delete_experience", args=[self.experience.id]),
+        )
 
     def test_delete_experience(self):
         """Verify that posting the delete form removes an experience."""
+        self.login_as_owner()
         response = self.client.post(
             reverse("main:delete_experience", args=[self.experience.id])
         )

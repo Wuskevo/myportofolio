@@ -1,12 +1,13 @@
 """Tests for project pages, CRUD forms, and the project JSON endpoint."""
 
-from django.test import TestCase
+from django.contrib.auth.models import Group, Permission, User
 from django.urls import reverse
 
 from main.models import Project
+from main.tests.base import BasePortfolioTestCase
 
 
-class ProjectTests(TestCase):
+class ProjectTests(BasePortfolioTestCase):
     def setUp(self):
         self.project = Project.objects.create(
             title="Portfolio Website",
@@ -15,21 +16,74 @@ class ProjectTests(TestCase):
             project_url="https://example.com/portfolio",
         )
 
-    def test_projects_page_displays_project_and_edit_link(self):
-        """Verify that the projects page renders project details and its edit URL."""
+    def test_anonymous_user_reads_projects_without_mutation_controls(self):
+        """Visitors can read projects and star counts without action controls."""
         response = self.client.get(reverse("main:show_projects"))
 
         # The response and template checks confirm the expected page is rendered.
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "projects.html")
-        # Check the project data and edit route rendered in the project card.
+        # Check project data while mutation controls remain hidden.
         self.assertContains(response, self.project.title)
         self.assertContains(response, self.project.description)
         self.assertContains(response, f'href="{self.project.project_url}"')
         self.assertContains(response, 'class="project-image-placeholder"')
+        self.assertNotContains(response, reverse("main:create_project"))
+        self.assertNotContains(
+            response,
+            reverse("main:update_project", args=[self.project.id]),
+        )
+        self.assertNotContains(
+            response,
+            reverse("main:delete_project", args=[self.project.id]),
+        )
+        self.assertNotContains(
+            response,
+            reverse("main:toggle_project_star", args=[self.project.id]),
+        )
+        self.assertContains(response, "★ 0")
+
+    def test_editor_sees_project_edit_but_not_create_or_delete(self):
+        editor = User.objects.create_user(username="editor", password="password")
+        permission = Permission.objects.get(
+            content_type__app_label="main",
+            codename="change_project",
+        )
+        editor_group = Group.objects.create(name="Editor")
+        editor_group.permissions.add(permission)
+        editor.groups.add(editor_group)
+        self.client.force_login(editor)
+
+        response = self.client.get(reverse("main:show_projects"))
+
         self.assertContains(
             response,
             reverse("main:update_project", args=[self.project.id]),
+        )
+        self.assertNotContains(response, reverse("main:create_project"))
+        self.assertNotContains(
+            response,
+            reverse("main:delete_project", args=[self.project.id]),
+        )
+
+    def test_superuser_sees_all_project_actions(self):
+        owner = User.objects.create_superuser(
+            username="owner",
+            email="owner@example.com",
+            password="password",
+        )
+        self.client.force_login(owner)
+
+        response = self.client.get(reverse("main:show_projects"))
+
+        self.assertContains(response, reverse("main:create_project"))
+        self.assertContains(
+            response,
+            reverse("main:update_project", args=[self.project.id]),
+        )
+        self.assertContains(
+            response,
+            reverse("main:delete_project", args=[self.project.id]),
         )
 
     def test_projects_json_endpoint_returns_projects(self):
@@ -68,6 +122,7 @@ class ProjectTests(TestCase):
 
     def test_create_project(self):
         """Verify that submitting the project form creates a database record."""
+        self.login_as_owner()
         response = self.client.post(
             reverse("main:create_project"),
             {
@@ -85,6 +140,7 @@ class ProjectTests(TestCase):
 
     def test_update_project_form_posts_to_update_route(self):
         """Verify that editing a project submits to its update URL, not create."""
+        self.login_as_owner()
         response = self.client.get(
             reverse("main:update_project", args=[self.project.id])
         )
@@ -97,6 +153,7 @@ class ProjectTests(TestCase):
 
     def test_update_project_changes_existing_record_without_duplicating(self):
         """Verify that an edit updates one project rather than creating another."""
+        self.login_as_owner()
         project_count = Project.objects.count()
         response = self.client.post(
             reverse("main:update_project", args=[self.project.id]),
@@ -117,6 +174,7 @@ class ProjectTests(TestCase):
 
     def test_delete_project(self):
         """Verify that posting the delete route removes the selected project."""
+        self.login_as_owner()
         response = self.client.post(
             reverse("main:delete_project", args=[self.project.id])
         )
