@@ -269,3 +269,7 @@ h3 {
 	background: var(--color-error);
 	color: var(--paper);
 }
+
+.nav-user {
+	color: var(--line)
+}
