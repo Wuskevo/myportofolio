@@ -25,6 +25,8 @@ class ProjectTests(TestCase):
         # Check the project data and edit route rendered in the project card.
         self.assertContains(response, self.project.title)
         self.assertContains(response, self.project.description)
+        self.assertContains(response, f'href="{self.project.project_url}"')
+        self.assertContains(response, 'class="project-image-placeholder"')
         self.assertContains(
             response,
             reverse("main:update_project", args=[self.project.id]),
@@ -39,6 +41,13 @@ class ProjectTests(TestCase):
         self.assertEqual(response["Content-Type"], "application/json")
         self.assertContains(response, self.project.title)
         self.assertContains(response, self.project.description)
+
+    def test_seeded_home_projects_have_image_urls(self):
+        for title in ("Nabla's Ascent", "Red's Elemental Duel"):
+            with self.subTest(title=title):
+                project = Project.objects.get(title=title)
+                self.assertTrue(project.project_image_url)
+                self.assertTrue(project.project_url)
 
     def test_projects_json_endpoint_filters_by_title(self):
         """Verify that title searches exclude projects that do not match."""

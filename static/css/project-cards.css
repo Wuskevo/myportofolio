@@ -32,8 +32,15 @@
 .project-image {
 	display: block;
 	width: 100%;
-	height: auto;
-	border: var(--line-width) solid var(--ink);
+	aspect-ratio: var(--aspect-photo);
+	object-fit: cover;
+	border-radius: var(--radius);
+}
+
+.project-image-placeholder {
+	width: 100%;
+	aspect-ratio: var(--aspect-photo);
+	background-color: var(--ink);
 	border-radius: var(--radius);
 }
 

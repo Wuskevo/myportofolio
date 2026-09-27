@@ -33,6 +33,7 @@ class MainTests(TestCase):
             description="Loaded from the projects table.",
             tech_stack="Django, Python",
             project_url="https://example.com/project",
+            project_image_url="https://picsum.photos/seed/database-project/640/360",
         )
 
         response = self.client.get(reverse("main:show_main"))
@@ -42,6 +43,8 @@ class MainTests(TestCase):
         self.assertContains(response, "Django")
         self.assertContains(response, "Python")
         self.assertContains(response, project.project_url)
+        self.assertContains(response, 'class="project-image"')
+        self.assertContains(response, project.project_image_url)
 
     def test_nonexistent_page_returns_404(self):
         """Verify that an unknown URL returns a not-found response."""
