@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock page_styles %}
 {% block meta %}
 <title>Register - {{ name }}</title>
 {% endblock meta %}
