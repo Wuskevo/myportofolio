@@ -116,6 +116,7 @@
 	align-items: center;
 	flex-wrap: wrap;
 	gap: var(--space-xl);
+	min-height: 3rem;
 	margin-top: var(--space-lg);
 }
 
