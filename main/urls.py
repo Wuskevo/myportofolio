@@ -26,6 +26,7 @@ from main.views import (
     delete_credential,
     delete_experience,
     delete_project,
+    toggle_project_star,
     
 )
 
@@ -70,4 +71,9 @@ urlpatterns = [
 		name="update_project",
 	),
 	path("projects/<uuid:project_id>/delete/", delete_project, name="delete_project"),
+	path(
+		"projects/<uuid:project_id>/star/",
+		toggle_project_star,
+		name="toggle_project_star"
+	)
 ]

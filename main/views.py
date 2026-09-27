@@ -1,7 +1,9 @@
 import datetime
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.exceptions import PermissionDenied
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -145,6 +147,7 @@ def delete_experience(request, experience_id):
 #
 
 def create_credential(request):
+
     form = CredentialForm(request.POST or None, request.FILES or None)
 
     if request.method == "POST" and form.is_valid():
@@ -188,6 +191,7 @@ def show_credentials(request):
     return render(request, "credentials.html", context)
 
 def update_credential(request, credential_id):
+    
     credential = get_object_or_404(Credential, pk=credential_id)
     form = CredentialForm(
         request.POST or None,
@@ -207,8 +211,9 @@ def update_credential(request, credential_id):
         "submit_label": "Update Credential",
     }
     return render(request, "forms/credentials_form.html", context)
-
+ 
 def delete_credential(request, credential_id):
+    
     credential = get_object_or_404(Credential, pk=credential_id)
 
     if request.method == "POST":
@@ -221,7 +226,12 @@ def delete_credential(request, credential_id):
 # Projects CRUD with json data delivery
 #
 
+@login_required(login_url="/login/") 
 def create_project(request):
+
+    if not request.user.is_superuser: # checks if logged-in account is the superuser
+        raise PermissionDenied # stops request with 403
+	
     form = ProjectForm(request.POST or None)
     
     if request.method == "POST" and form.is_valid():
@@ -243,7 +253,7 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects)
+    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
     return HttpResponse(projects_json, content_type="application/json")
 
 def show_projects(request):
@@ -263,7 +273,12 @@ def show_projects(request):
     }
     return render(request, "projects.html", context)
 
+@login_required(login_url="/login/") 
 def update_project(request, project_id):
+    
+    if not request.user.is_superuser: # checks if logged-in account is the superuser
+        raise PermissionDenied # stops request with 403
+    
     project = get_object_or_404(Project, pk=project_id)
     form = ProjectForm(
         request.POST or None,
@@ -285,11 +300,28 @@ def update_project(request, project_id):
     }
     return render(request, "forms/projects_form.html", context)
 
+@login_required(login_url="/login/") 
 def delete_project(request, project_id):
+    
+    if not request.user.is_superuser: # checks if logged-in account is the superuser
+        raise PermissionDenied # stops request with 403
+
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == "POST":
         project.delete()
         messages.success(request, "project successfully removed!")
 
+    return redirect("main:show_projects")
+
+@login_required(login_url="/login")
+def toggle_project_star(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    
+    if request.method == "POST":
+        if request.user in project.starred_by.all():
+            project.starred_by.remove(request.user)
+        else:
+            project.starred_by.add(request.user)
+        
     return redirect("main:show_projects")

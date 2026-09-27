@@ -26,7 +26,7 @@ urlpatterns = [
     path("", include("main.urls")),
     path("api/credentials/", get_credentials_json, name="get_credentials_json"),
     path("api/experiences/", get_experiences_json, name="get_experiences_json"),
-    path("api/projects/", get_credentials_json, name="get_projects_json"),
+    path("api/projects/", get_projects_json, name="get_projects_json"),
 ]   
 
 if settings.DEBUG:
