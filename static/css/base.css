@@ -24,6 +24,9 @@ html {
 	--accent-dark: #283f84;
 	--line: #d68707;
 	--text-muted: #3f2701;
+	--star-color-inactive: var(--ink);
+	--star-color-active: var(--accent);
+	--star-color-guest: #002141;
 
 	/* --- Structural --- */
 	--line-width: 2px;
@@ -286,16 +289,20 @@ h3 {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.4rem;
-	background: var(--ink);
+	background: var(--star-color-inactive);
 }
 
 .button-star.is-starred {
-	background: var(--accent);
+	background: var(--star-color-active);
 }
 
 .star-count {
 	padding: 0.05rem 0.4rem;
 	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.25);
 	font-size: 0.8rem;
+}
+
+.star-count-guest {
+	color: var(--star-color-guest);
+	background: var(--star-color-active);
 }
