@@ -98,6 +98,6 @@ Drastically improved the quality of style.css by tokenizing magic values and doc
 - ~~Keep experience and credential tests in separate files under `main/tests/`.~~
 - ~~Add a test whenever a CRUD action, JSON endpoint, or form field changes.~~
 - Consider sharing a queryset helper instead of calling JSON views from display views.
-- Extract repeated credential category markup into a reusable template component.
+- ~~Extract repeated credential category markup into a reusable template component.~~
 - Add browser coverage for opening, cancelling, and confirming delete modals.
 - Run `python manage.py check` and `python manage.py test` before submitting changes.
