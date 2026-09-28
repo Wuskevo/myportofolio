@@ -1,57 +1,52 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>{{ name }} - Portfolio</title>
-
-	<!-- Fonts -->
-
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
-
-	<!-- Ionicons: module script for modern browsers -->
-	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-	<!-- Ionicons: fallback for older browsers -->
-	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
-	<link rel="stylesheet" href="{% static 'css/base.css' %}" />
-	{% block page_styles %}{% endblock page_styles %}
-	{% block meta %} {% endblock meta %}
-</head>
-
-<body>
-	<header class="site-header">
-		<div class="container">
-			<a href="{% url 'main:show_main' %}" , class="brand">{{ name }}</a>
-			<nav>
-				<a href="{% url 'main:show_main' %}">Profile</a>
-				<a href="{% url 'main:show_credentials' %}">Credentials</a>
-				<a href="{% url 'main:show_experiences' %}">Experience</a>
-				<a href="{% url 'main:show_projects' %}">Projects</a>
-				{% if user.is_authenticated %}
-				<span class="nav-user">{{ user.username }}</span>
-				<a href="{% url 'main:logout' %}">Logout</a>
-				{% else %}
-				<a href="{% url 'main:register' %}">Register</a>
-				<a href="{% url 'main:login' %}">Login</a>
-				{% endif %}
-			</nav>
-		</div>
-	</header>
-
-	{% block content %} {% endblock content %}
-
-	<footer class="site-footer">
-		<div class="container">
-			<p>
-				&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.
-			</p>
-		</div>
-	</footer>
-</body>
-
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ name }} - Portfolio</title>
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+              rel="stylesheet" />
+        <!-- Ionicons: module script for modern browsers -->
+        <script type="module"
+                src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <!-- Ionicons: fallback for older browsers -->
+        <script nomodule
+                src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+        {% block page_styles %}
+        {% endblock page_styles %}
+        {% block meta %}
+        {% endblock meta %}
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <a href="{% url 'main:show_main' %}" , class="brand">{{ name }}</a>
+                <nav>
+                    <a href="{% url 'main:show_main' %}">Profile</a>
+                    <a href="{% url 'main:show_credentials' %}">Credentials</a>
+                    <a href="{% url 'main:show_experiences' %}">Experience</a>
+                    <a href="{% url 'main:show_projects' %}">Projects</a>
+                    {% if user.is_authenticated %}
+                        <span class="nav-user">{{ user.username }}</span>
+                        <a href="{% url 'main:logout' %}">Logout</a>
+                    {% else %}
+                        <a href="{% url 'main:register' %}">Register</a>
+                        <a href="{% url 'main:login' %}">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+        {% block content %}
+        {% endblock content %}
+        <footer class="site-footer">
+            <div class="container">
+                <p>© 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+            </div>
+        </footer>
+    </body>
 </html>

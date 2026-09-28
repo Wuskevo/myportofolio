@@ -1,43 +1,46 @@
-{% extends "base.html" %} {% load static %}
+{% extends "base.html" %}
+{% load static %}
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/listings.css' %}" />
-<link rel="stylesheet" href="{% static 'css/project-cards.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/listings.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/project-cards.css' %}" />
 {% endblock page_styles %}
 {% block meta %}
-<title>Projects - {{ name }}</title>
+    <title>Projects - {{ name }}</title>
 {% endblock meta %}
 {% block content %}
-<main>
-	<section class="content-section" id="projects">
-		<div class="container">
-			<p class="section-kicker">My Works and Craft</p>
-
-			<div class="section-header">
-				<h1>Projects</h1>
-				{% if user.is_superuser %}
-				<a href="{% url 'main:create_project' %}" class="button section-add-button">
-					<span aria-hidden="true">+</span>
-					Add Project
-				</a>
-				{% endif %}
-			</div>
-
-			<form method="get" action="{% url 'main:show_projects' %}" class="search-bar-1">
-				<input type="search" name="title" value="{{ title_query }}" placeholder="Search by project title"
-					class="search-input-1" aria-label="Search by project title" />
-				<button type="submit" class="button">Search</button>
-			</form>
-
-			<div class="project-grid">
-				{% for project in project_list %}
-				{% include "components/project_card.html" with project=project heading_level="h2" show_actions=True %}
-				{% empty %}
-				<p class="empty-state">
-					No Projects added yet.
-				</p>
-				{% endfor %}
-			</div>
-		</div>
-	</section>
-</main>
+    <main>
+        <section class="content-section" id="projects">
+            <div class="container">
+                <p class="section-kicker">My Works and Craft</p>
+                <div class="section-header">
+                    <h1>Projects</h1>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'main:create_project' %}"
+                           class="button section-add-button">
+                            <span aria-hidden="true">+</span>
+                            Add Project
+                        </a>
+                    {% endif %}
+                </div>
+                <form method="get"
+                      action="{% url 'main:show_projects' %}"
+                      class="search-bar-1">
+                    <input type="search"
+                           name="title"
+                           value="{{ title_query }}"
+                           placeholder="Search by project title"
+                           class="search-input-1"
+                           aria-label="Search by project title" />
+                    <button type="submit" class="button">Search</button>
+                </form>
+                <div class="project-grid">
+                    {% for project in project_list %}
+                        {% include "components/project_card.html" with project=project heading_level="h2" show_actions=True %}
+                    {% empty %}
+                        <p class="empty-state">No Projects added yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock content %}
