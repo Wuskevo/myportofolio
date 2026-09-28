@@ -72,6 +72,7 @@ Once that JSON arrives at a client (like a mobile app or frontend JavaScript), t
 #### How I used Copilot
 
 - Copilot helped update the role and CRUD tests, expand the Selenium checks to cover the three portfolio sections, and adjust card spacing when controls are hidden.
+- Copilot helped moved parts of huge scripts (like views) into modular scripts.
 
 ### Chat History
 
@@ -93,11 +94,10 @@ Guidance in building the credential model and presentation with the use of pytho
 
 Drastically improved the quality of style.css by tokenizing magic values and documenting them
 
-## TODOS & Suggestions
+## TODOS
 
 - ~~Keep experience and credential tests in separate files under `main/tests/`.~~
 - ~~Add a test whenever a CRUD action, JSON endpoint, or form field changes.~~
-- Consider sharing a queryset helper instead of calling JSON views from display views.
+- ~~Consider sharing a queryset helper instead of calling JSON views from display views.~~
 - ~~Extract repeated credential category markup into a reusable template component.~~
 - Add browser coverage for opening, cancelling, and confirming delete modals.
-- Run `python manage.py check` and `python manage.py test` before submitting changes.
