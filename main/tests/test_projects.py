@@ -120,6 +120,22 @@ class ProjectTests(BasePortfolioTestCase):
         self.assertContains(response, "Game Jam Entry")
         self.assertNotContains(response, self.project.title)
 
+    def test_projects_page_filters_by_title(self):
+        """Verify that title searches filter projects on the HTML page."""
+        Project.objects.create(
+            title="Game Jam Entry",
+            description="A small game jam project.",
+            tech_stack="Godot, GDScript",
+        )
+
+        response = self.client.get(
+            reverse("main:show_projects"),
+            {"title": "game"},
+        )
+
+        self.assertContains(response, "Game Jam Entry")
+        self.assertNotContains(response, self.project.title)
+
     def test_create_project(self):
         """Verify that submitting the project form creates a database record."""
         self.login_as_owner()

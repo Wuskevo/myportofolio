@@ -76,14 +76,30 @@ class ExperienceTests(BasePortfolioTestCase):
         # See the earlier negative-content assertion: assertNotContains checks excluded data.
         self.assertNotContains(response, self.experience.title)
 
-    def test_experience_page_displays_deserialized_json_data(self):
-        """Verify that deserialized JSON data is displayed by the experience page."""
+    def test_experience_page_displays_database_data(self):
+        """Verify that experience data is displayed by the experience page."""
         response = self.client.get(reverse("main:show_experiences"))
 
         # See the content assertion above: assertContains checks rendered content.
         self.assertContains(response, self.experience.title)
         # See the content assertion above: assertContains checks rendered content.
         self.assertContains(response, self.experience.get_category_display())
+
+    def test_experience_page_filters_by_title(self):
+        """Verify that title searches filter experiences on the HTML page."""
+        Experience.objects.create(
+            title="Competitive Programming Coach",
+            description="Mentored students in algorithmic problem solving.",
+            category="volunteer",
+        )
+
+        response = self.client.get(
+            reverse("main:show_experiences"),
+            {"title": "coach"},
+        )
+
+        self.assertContains(response, "Competitive Programming Coach")
+        self.assertNotContains(response, self.experience.title)
 
     def test_empty_experience_page(self):
         """Verify that the experience page shows its empty-state message."""

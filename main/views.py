@@ -25,6 +25,11 @@ EDITOR_STR = "Editor"
 def is_editor_user(user):
     return user.is_authenticated and user.groups.filter(name=EDITOR_STR).exists()
 
+def filter_by_title(queryset, title_query):
+    if title_query:
+        return queryset.filter(title__icontains=title_query)
+    return queryset
+
 def register(request):
     form = UserCreationForm(request.POST or None)
     
@@ -100,23 +105,14 @@ def create_experience(request):
 
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
-    experiences = Experience.objects.all()
-
-    if title_query:
-        experiences = experiences.filter(title__icontains=title_query)
+    experiences = filter_by_title(Experience.objects.all(), title_query)
 
     experiences_json = serializers.serialize("json", experiences, use_natural_foreign_keys=True)
     return HttpResponse(experiences_json, content_type="application/json")
 
 def show_experiences(request):
-    json_response = get_experiences_json(request)
-
-    experiences = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    experiences = [experience.object for experience in experiences]
     title_query = request.GET.get("title", "").strip()
+    experiences = filter_by_title(Experience.objects.all(), title_query)
 
     context = {
         "name": NAME,
@@ -200,23 +196,16 @@ def create_credential(request):
 
 def get_credentials_json(request):
     title_query = request.GET.get("title", "").strip()
-    credentials = Credential.objects.all()
-
-    if title_query:
-        credentials = credentials.filter(title__icontains=title_query)
+    credentials = filter_by_title(Credential.objects.all(), title_query)
 
     credentials_json = serializers.serialize("json", credentials)
     return HttpResponse(credentials_json, content_type="application/json")
 
 def show_credentials(request):
-    json_response = get_credentials_json(request)
-    credentials = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
+    title_query = request.GET.get("title", "").strip()
+    credentials = filter_by_title(Credential.objects.all(), title_query)
     credentials_by_category = {}
-    for deserialized_credential in credentials:
-        credential = deserialized_credential.object
+    for credential in credentials:
         credentials_by_category.setdefault(credential.category, []).append(credential)
 
     context = {
@@ -290,23 +279,14 @@ def create_project(request):
 
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
-    projects = Project.objects.all()
-
-    if title_query:
-        projects = projects.filter(title__icontains=title_query)
+    projects = filter_by_title(Project.objects.all(), title_query)
 
     projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
     return HttpResponse(projects_json, content_type="application/json")
 
 def show_projects(request):
-    json_response = get_projects_json(request)
-
-    projects = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    projects = [project.object for project in projects]
     title_query = request.GET.get("title", "").strip()
+    projects = filter_by_title(Project.objects.all(), title_query)
 
     context = {
         "name": NAME,

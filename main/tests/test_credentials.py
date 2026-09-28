@@ -82,14 +82,24 @@ class CredentialTests(BasePortfolioTestCase):
         self.assertContains(response, 'title="Remove credential"', count=4)
         self.assertContains(response, "Edit Credential", count=4)
 
-    def test_credentials_page_displays_deserialized_json_data(self):
-        """Verify that deserialized credential data appears on the credentials page."""
+    def test_credentials_page_displays_database_data(self):
+        """Verify that credential data appears on the credentials page."""
         response = self.client.get(reverse("main:show_credentials"))
 
         # See the content assertion above: assertContains checks rendered content.
         self.assertContains(response, self.credentials["certification"].title)
         # See the assertion above: assertContains checks rendered content.
         self.assertContains(response, self.credentials["certification"].issuer)
+
+    def test_credentials_page_filters_by_title(self):
+        """Verify that title searches filter credentials on the HTML page."""
+        response = self.client.get(
+            reverse("main:show_credentials"),
+            {"title": "award"},
+        )
+
+        self.assertContains(response, self.credentials["award"].title)
+        self.assertNotContains(response, self.credentials["certification"].title)
 
     def test_empty_category_shows_placeholder(self):
         """Verify that an empty credential category shows its placeholder."""
