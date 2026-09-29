@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.core import serializers
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from main.forms import ProjectForm
@@ -33,22 +32,51 @@ def create_project(request):
 
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
-    projects = filter_by_title(Project.objects.all(), title_query)
+    projects = filter_by_title(
+        Project.objects.prefetch_related("starred_by").all(),
+        title_query,
+    )
 
-    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
-    return HttpResponse(projects_json, content_type="application/json")
+    data = []
+    for project in projects:
+        starred_users = list(project.starred_by.all())
+        is_starred = (
+            request.user in starred_users
+            if request.user.is_authenticated
+            else False
+        )
+
+        data.append(
+            {
+                "pk": str(project.id),
+                "fields": {
+                    "title": project.title,
+                    "description": project.description,
+                    "tech_stack": project.tech_stack,
+                    "project_url": project.project_url,
+                    "project_image_url": project.project_image_url,
+                    "star_count": len(starred_users),
+                    "is_starred": is_starred,
+                    "starred_by_names": ", ".join(
+                        user.username for user in starred_users
+                    ),
+                },
+            }
+        )
+
+    return JsonResponse(data, safe=False)
 
 
 def show_projects(request):
     title_query = request.GET.get("title", "").strip()
-    projects = filter_by_title(Project.objects.all(), title_query)
-
+    
     context = {
         "name": NAME,
-        "project_list": projects,
         "title_query": title_query,
         "is_editor": is_editor_user(request.user),
+        "form": ProjectForm(),
     }
+    
     return render(request, "projects.html", context)
 
 

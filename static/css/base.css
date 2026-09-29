@@ -306,3 +306,7 @@ h3 {
 	color: var(--star-color-guest);
 	background: var(--star-color-active);
 }
+
+.hide {
+    display: none !important;
+}

@@ -96,6 +96,44 @@ class ProjectTests(BasePortfolioTestCase):
         self.assertContains(response, self.project.title)
         self.assertContains(response, self.project.description)
 
+    def test_projects_json_includes_star_metadata(self):
+        """Star metadata reflects the viewer and project relationships."""
+        starred_user = User.objects.create_user(
+            username="starred-user",
+            password="password",
+        )
+        other_user = User.objects.create_user(
+            username="other-user",
+            password="password",
+        )
+        self.project.starred_by.add(starred_user, other_user)
+
+        self.client.force_login(starred_user)
+        authenticated_response = self.client.get(
+            reverse("main:get_projects_json")
+        )
+        authenticated_project = next(
+            item
+            for item in authenticated_response.json()
+            if item["pk"] == str(self.project.id)
+        )
+
+        self.assertEqual(authenticated_project["fields"]["star_count"], 2)
+        self.assertTrue(authenticated_project["fields"]["is_starred"])
+        self.assertEqual(
+            set(authenticated_project["fields"]["starred_by_names"].split(", ")),
+            {"starred-user", "other-user"},
+        )
+
+        self.client.logout()
+        anonymous_response = self.client.get(reverse("main:get_projects_json"))
+        anonymous_project = next(
+            item
+            for item in anonymous_response.json()
+            if item["pk"] == str(self.project.id)
+        )
+        self.assertFalse(anonymous_project["fields"]["is_starred"])
+
     def test_seeded_home_projects_have_image_urls(self):
         for title in ("Nabla's Ascent", "Red's Elemental Duel"):
             with self.subTest(title=title):

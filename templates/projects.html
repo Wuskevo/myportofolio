@@ -3,6 +3,7 @@
 {% block page_styles %}
     <link rel="stylesheet" href="{% static 'css/listings.css' %}" />
     <link rel="stylesheet" href="{% static 'css/project-cards.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 {% endblock page_styles %}
 {% block meta %}
     <title>Projects - {{ name }}</title>
@@ -13,24 +14,27 @@
             <div class="container">
                 <p class="section-kicker">My Works and Craft</p>
                 <div class="section-header">
-                    <button class="button button-secondary"
+                    <!--<button class="button button-secondary"
                             type="button"
                             onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
                         Test Toast Notification
-                    </button>
+                    </button>-->
                     <h1>Projects</h1>
                     {% if user.is_superuser %}
-                        <a href="{% url 'main:create_project' %}"
-                           class="button section-add-button">
+                        <button type="button"
+                                class="button project-add-button"
+                                popovertarget="add-project-modal">
                             <span aria-hidden="true">+</span>
                             Add Project
-                        </a>
+                        </button>
                     {% endif %}
                 </div>
                 <form method="get"
                       action="{% url 'main:show_projects' %}"
+                      id="project-search-form"
                       class="search-bar-1">
                     <input type="search"
+                           id="search-input"
                            name="title"
                            value="{{ title_query }}"
                            placeholder="Search by project title"
@@ -38,14 +42,253 @@
                            aria-label="Search by project title" />
                     <button type="submit" class="button">Search</button>
                 </form>
-                <div class="project-grid">
-                    {% for project in project_list %}
+                <!-- Loading State -->
+                <div id="loading" class="empty-state hide">
+                    <p>Loading projects...</p>
+                </div>
+                <!-- Error State -->
+                <div id="error" class="empty-state hide">
+                    <p>Failed to load project data. Please try again.</p>
+                </div>
+                <!-- Empty State -->
+                <div id="empty" class="empty-state hide">
+                    <p>No projects have been added or found yet.</p>
+                </div>
+                <!-- Project Grid -->
+                <div id="grid" class="project-grid hide">
+                    <!--{% for project in project_list %}
                         {% include "components/project_card.html" with project=project heading_level="h2" show_actions=True %}
                     {% empty %}
                         <p class="empty-state">No Projects added yet.</p>
-                    {% endfor %}
+                    {% endfor %}-->
                 </div>
             </div>
         </section>
     </main>
+    {% if user.is_superuser %}
+        {% include "forms/project_form_modal.html" %}
+    {% endif %}
+    <script>
+    // Configuration
+    const BASE_PROJECTS_ENDPOINT = "{% url 'main:get_projects_json' %}";
+    const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
+    const IS_EDITOR = "{{ is_editor|yesno:'true,false' }}" === "true";
+    const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+    const CSRF_TOKEN = "{{ csrf_token }}";
+    let projectsAbortController;
+
+    // DOM elements
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const searchForm = document.getElementById('project-search-form');
+    const searchInput = document.getElementById('search-input');
+
+	const SEARCH_DEBOUNCE_DELAY = 300;
+	let searchDebounceTimer;
+
+    // Show/hide page sections
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        loadingState.classList.toggle('hide', !showLoading);
+        errorState.classList.toggle('hide', !showError);
+        emptyState.classList.toggle('hide', !showEmpty);
+        gridContainer.classList.toggle('hide', !showGrid);
+    }
+
+    // Build a project card element
+    function buildProjectCardElement(item) {
+        const project = item.fields;
+        const projectId = item.pk;
+
+        const articleElement = document.createElement('article');
+        articleElement.className = 'project-card';
+
+        if (project.project_image_url) {
+            const image = document.createElement('img');
+            image.className = 'project-image';
+            image.src = project.project_image_url;
+            image.alt = project.title;
+            articleElement.appendChild(image);
+        } else {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'project-image-placeholder';
+            placeholder.setAttribute('aria-hidden', 'true');
+            articleElement.appendChild(placeholder);
+        }
+
+        const title = document.createElement('h2');
+        title.textContent = project.title;
+        articleElement.appendChild(title);
+
+        const techStackItems = project.tech_stack
+            .split(',')
+            .map(item => item.trim())
+            .filter(Boolean);
+        if (techStackItems.length > 0) {
+            const tagList = document.createElement('div');
+            tagList.className = 'tag-list';
+            techStackItems.forEach(item => {
+                const tag = document.createElement('span');
+                tag.className = 'tag';
+                tag.textContent = item;
+                tagList.appendChild(tag);
+            });
+            articleElement.appendChild(tagList);
+        }
+
+        const description = document.createElement('p');
+        description.textContent = project.description;
+        articleElement.appendChild(description);
+
+        if (project.project_url) {
+            const projectLink = document.createElement('a');
+            projectLink.className = 'project-link';
+            projectLink.href = project.project_url;
+            projectLink.target = '_blank';
+            projectLink.rel = 'noopener';
+            projectLink.textContent = 'View project';
+            articleElement.appendChild(projectLink);
+        }
+
+        // A dummy UUID used as a placeholder to be replaced with the real ID from the JSON data
+        const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+        const editUrl = "{% url 'main:update_project' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+        const starUrl = "{% url 'main:toggle_project_star' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions project-card-actions';
+
+        if (IS_AUTHENTICATED) {
+            const starForm = document.createElement('form');
+            starForm.method = 'post';
+            starForm.action = starUrl;
+            starForm.className = 'star-form';
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = CSRF_TOKEN;
+            starForm.appendChild(csrfInput);
+
+            const starButton = document.createElement('button');
+            starButton.type = 'submit';
+            starButton.className = `button button-star${project.is_starred ? ' is-starred' : ''}`;
+            starButton.title = project.star_count > 0
+                ? `Starred by ${project.starred_by_names}`
+                : 'Be the first to star';
+            starButton.appendChild(document.createTextNode('★ '));
+            starButton.appendChild(document.createTextNode(project.is_starred ? 'Unstar' : 'Star'));
+
+            const starCount = document.createElement('span');
+            starCount.className = 'star-count';
+            starCount.textContent = project.star_count;
+            starButton.appendChild(starCount);
+            starForm.appendChild(starButton);
+            actions.appendChild(starForm);
+        } else {
+            const starCount = document.createElement('span');
+            starCount.className = 'star-count star-count-guest';
+            starCount.setAttribute('aria-label', 'Star count');
+            starCount.textContent = `★ ${project.star_count}`;
+            actions.appendChild(starCount);
+        }
+
+        const managementActions = document.createElement('div');
+        if (IS_SUPERUSER || IS_EDITOR) {
+            const editLink = document.createElement('a');
+            editLink.href = editUrl;
+            editLink.className = 'button button-secondary';
+            editLink.textContent = 'Edit Project';
+            managementActions.appendChild(editLink);
+        }
+
+        if (IS_SUPERUSER) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = deleteUrl;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = CSRF_TOKEN;
+            deleteForm.appendChild(csrfInput);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'submit';
+            deleteButton.className = 'button button-danger';
+            deleteButton.textContent = 'Delete';
+            deleteForm.addEventListener('submit', event => {
+                if (!window.confirm(`Are you sure you want to delete ${project.title}?`)) {
+                    event.preventDefault();
+                }
+            });
+            deleteForm.appendChild(deleteButton);
+            managementActions.appendChild(deleteForm);
+        }
+
+        actions.appendChild(managementActions);
+        articleElement.appendChild(actions);
+        return articleElement;
+    }
+
+    // Fetch project data
+    async function fetchProjects(searchQuery = "") {
+        if (projectsAbortController) projectsAbortController.abort();
+        projectsAbortController = new AbortController();
+
+        try {
+            displayPageSection({ showLoading: true });
+            
+            const url = searchQuery ? `${BASE_PROJECTS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_PROJECTS_ENDPOINT;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+                signal: projectsAbortController.signal,
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const projectData = await response.json();
+
+            if (projectData.length === 0) {
+                displayPageSection({ showEmpty: true });
+            } else {
+                gridContainer.innerHTML = '';
+                projectData.forEach(item => {
+                    gridContainer.appendChild(buildProjectCardElement(item));
+                });
+                displayPageSection({ showGrid: true });
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+            console.error('Error loading projects:', error);
+            displayPageSection({ showError: true });
+        }
+    }
+
+    function searchProjects() {
+		fetchProjects(searchInput.value.trim());
+	}
+
+	searchInput.addEventListener("input", function() {
+		clearTimeout(searchDebounceTimer);
+
+		searchDebounceTimer = setTimeout(function() {
+			searchProjects();
+		}, SEARCH_DEBOUNCE_DELAY);
+	});
+
+	searchForm.addEventListener("submit", function(event) {
+		event.preventDefault();
+		clearTimeout(searchDebounceTimer);
+		searchProjects();
+	});
+
+    // Start the application
+    fetchProjects(searchInput.value.trim());
+    </script>
 {% endblock content %}

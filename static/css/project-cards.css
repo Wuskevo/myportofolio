@@ -104,6 +104,31 @@
 }*/
 
 .project-card-actions {
+	flex-direction: column;
+	align-items: flex-start;
 	margin-top: auto;
 	min-height: 3rem;
+}
+
+.project-card-actions>.star-form,
+.project-card-actions>div {
+	width: 100%;
+}
+
+.project-card-actions>div {
+	display: grid;
+	gap: var(--space-sm);
+}
+
+.project-card-actions>div>form {
+	width: 100%;
+}
+
+.project-card-actions .button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 3rem;
+	text-align: center;
 }
