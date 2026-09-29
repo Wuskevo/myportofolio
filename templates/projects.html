@@ -13,6 +13,11 @@
             <div class="container">
                 <p class="section-kicker">My Works and Craft</p>
                 <div class="section-header">
+                    <button class="button button-secondary"
+                            type="button"
+                            onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
+                        Test Toast Notification
+                    </button>
                     <h1>Projects</h1>
                     {% if user.is_superuser %}
                         <a href="{% url 'main:create_project' %}"

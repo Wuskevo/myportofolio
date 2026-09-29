@@ -1,0 +1,11 @@
+{% load static %}
+{% block pagestyles %}
+	<link rel="stylesheet" href="{% static 'css/ui/toast.css' %}"/>
+{% endblock pagestyles%}
+<div id="toast-component" class="toast-component toast-hidden" popover="manual">
+	<div class="toast-content">
+		<h3 id="toast-title" class="toast-title">Sample Title</h3>
+		<p id="toast-message" class="toast-message">Sample Message</p>
+	</div>
+</div>
+<script src="{% static 'js/ui/toast.js' %}"></script>
