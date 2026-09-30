@@ -174,6 +174,24 @@ class ProjectTests(BasePortfolioTestCase):
         self.assertContains(response, "Game Jam Entry")
         self.assertNotContains(response, self.project.title)
 
+    def test_create_project_ajax_returns_created_project(self):
+        self.login_as_owner()
+        response = self.client.post(
+            reverse("main:create_project_ajax"),
+            {
+                "title": "AJAX Project",
+                "description": "Created from the project modal.",
+                "tech_stack": "Django, JavaScript",
+                "project_url": "",
+                "project_image_url": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertTrue(Project.objects.filter(title="AJAX Project").exists())
+        self.assertEqual(response.json()["message"], "Project added successfully.")
+
     def test_create_project(self):
         """Verify that submitting the project form creates a database record."""
         self.login_as_owner()

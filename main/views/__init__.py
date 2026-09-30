@@ -17,6 +17,7 @@ from .experiences import (
 from .home import show_main
 from .projects import (
     create_project,
+    create_project_ajax,
     delete_project,
     get_projects_json,
     show_projects,

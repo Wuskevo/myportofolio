@@ -9,7 +9,7 @@ from main.views import (
     
     create_credential,
     create_experience,
-    create_project,
+    create_project, create_project_ajax,
     
     get_credentials_json,
     get_experiences_json,
@@ -69,6 +69,7 @@ urlpatterns = [
     ),
     
     path("projects/add/", create_project, name="create_project"),
+    path("projects/add-ajax/", create_project_ajax, name="create_project_ajax"),
 	path("projects/", show_projects, name="show_projects"),
 	path("projects/json/", get_projects_json, name="get_projects_json"),	
 	path(
