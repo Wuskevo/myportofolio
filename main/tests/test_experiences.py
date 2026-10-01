@@ -27,23 +27,17 @@ class ExperienceTests(BasePortfolioTestCase):
         self.assertTrue(self.experience.is_ongoing)
 
     def test_experience_page(self):
-        """Verify that an experience appears on the rendered experience page."""
+        """Verify that the experience page renders the AJAX shell and page metadata."""
         response = self.client.get(reverse("main:show_experiences"))
 
-        # See the status-code assertion above: assertEqual compares expected values.
         self.assertEqual(response.status_code, 200)
-        # See the template assertion above: assertTemplateUsed verifies the rendered template.
         self.assertTemplateUsed(response, "experiences.html")
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, self.experience.title)
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, self.experience.description)
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, "Part-Time")
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, "Ongoing")
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
+        self.assertContains(response, 'id="experience-search-form"')
+        self.assertContains(response, 'id="grid"')
+        self.assertContains(response, 'id="loading"')
+        self.assertContains(response, 'id="error"')
+        self.assertContains(response, 'id="empty"')
+        self.assertContains(response, 'id="experience"')
 
     def test_experiences_json_endpoint_returns_experiences(self):
         """Verify that the experience endpoint returns JSON with stored data."""
@@ -77,16 +71,17 @@ class ExperienceTests(BasePortfolioTestCase):
         self.assertNotContains(response, self.experience.title)
 
     def test_experience_page_displays_database_data(self):
-        """Verify that experience data is displayed by the experience page."""
+        """Verify that the experience page configures the client-side JSON fetch."""
         response = self.client.get(reverse("main:show_experiences"))
 
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, self.experience.title)
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, self.experience.get_category_display())
+        self.assertContains(response, 'name="title"')
+        self.assertContains(response, 'id="search-input"')
+        self.assertContains(
+            response, 'const BASE_EXPERIENCE_ENDPOINT = "/experiences/json/";'
+        )
 
     def test_experience_page_filters_by_title(self):
-        """Verify that title searches filter experiences on the HTML page."""
+        """Verify that the search form keeps the current title filter in the page shell."""
         Experience.objects.create(
             title="Competitive Programming Coach",
             description="Mentored students in algorithmic problem solving.",
@@ -98,29 +93,30 @@ class ExperienceTests(BasePortfolioTestCase):
             {"title": "coach"},
         )
 
-        self.assertContains(response, "Competitive Programming Coach")
-        self.assertNotContains(response, self.experience.title)
+        self.assertContains(response, 'value="coach"')
+        self.assertContains(response, 'name="title"')
+        self.assertNotContains(response, 'value="PBP Teaching Assistant"')
 
     def test_empty_experience_page(self):
-        """Verify that the experience page shows its empty-state message."""
+        """Verify that the experience page shows its empty-state shell."""
         Experience.objects.all().delete()
         response = self.client.get(reverse("main:show_experiences"))
 
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, "No experience has been added yet.")
+        self.assertContains(response, "No experiences have been added or found yet.")
 
     def test_completed_experience(self):
-        """Verify that completed experiences show Completed instead of Ongoing."""
+        """Verify that completed experiences are marked as finished in the model and JSON payload."""
         self.experience.ended_at = timezone.now()
         self.experience.save()
-        response = self.client.get(reverse("main:show_experiences"))
 
-        # assertFalse checks that a value evaluates to False.
+        response = self.client.get(reverse("main:get_experiences_json"))
+
         self.assertFalse(self.experience.is_ongoing)
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, "Completed")
-        # See the earlier negative-content assertion: assertNotContains checks excluded content.
-        self.assertNotContains(response, "Ongoing")
+        item = next(
+            entry for entry in response.json() if entry["pk"] == str(self.experience.id)
+        )
+        self.assertIsNotNone(item["fields"]["ended_at"])
+        self.assertEqual(item["fields"]["category"], "part-time")
 
     def test_update_experience(self):
         """Verify that posting the experience form updates the stored experience."""
@@ -158,10 +154,10 @@ class ExperienceTests(BasePortfolioTestCase):
         )
 
     def test_anonymous_user_does_not_see_experience_actions(self):
-        """Visitors can read experiences but do not see account-only controls."""
+        """Visitors can read the page shell but do not see owner-only controls."""
         response = self.client.get(reverse("main:show_experiences"))
 
-        self.assertNotContains(response, reverse("main:create_experience"))
+        self.assertNotContains(response, 'id="add-experience-modal"')
         self.assertNotContains(
             response,
             reverse("main:update_experience", args=[self.experience.id]),
@@ -174,7 +170,7 @@ class ExperienceTests(BasePortfolioTestCase):
             response,
             reverse("main:toggle_experience_star", args=[self.experience.id]),
         )
-        self.assertContains(response, "★ 0")
+        self.assertContains(response, 'id="experience-search-form"')
 
     def test_editor_sees_experience_edit_but_not_create_or_delete(self):
         editor = User.objects.create_user(username="editor", password="password")
@@ -189,15 +185,11 @@ class ExperienceTests(BasePortfolioTestCase):
 
         response = self.client.get(reverse("main:show_experiences"))
 
-        self.assertContains(
-            response,
-            reverse("main:update_experience", args=[self.experience.id]),
-        )
-        self.assertNotContains(response, reverse("main:create_experience"))
-        self.assertNotContains(
-            response,
-            reverse("main:delete_experience", args=[self.experience.id]),
-        )
+        self.assertTrue(response.context["is_editor"])
+        self.assertFalse(response.context["user"].is_superuser)
+        self.assertContains(response, 'const IS_EDITOR = "true" === "true";')
+        self.assertContains(response, 'const IS_SUPERUSER = "false" === "true";')
+        self.assertNotContains(response, 'id="add-experience-modal"')
 
     def test_superuser_sees_all_experience_actions(self):
         owner = User.objects.create_superuser(
@@ -209,14 +201,21 @@ class ExperienceTests(BasePortfolioTestCase):
 
         response = self.client.get(reverse("main:show_experiences"))
 
-        self.assertContains(response, reverse("main:create_experience"))
+        self.assertContains(response, 'id="add-experience-modal"')
+        self.assertContains(response, reverse("main:create_experience_ajax"))
         self.assertContains(
             response,
-            reverse("main:update_experience", args=[self.experience.id]),
+            reverse(
+                "main:update_experience",
+                args=["00000000-0000-0000-0000-000000000000"],
+            ),
         )
         self.assertContains(
             response,
-            reverse("main:delete_experience", args=[self.experience.id]),
+            reverse(
+                "main:delete_experience",
+                args=["00000000-0000-0000-0000-000000000000"],
+            ),
         )
 
     def test_delete_experience(self):
@@ -235,7 +234,23 @@ class ExperienceTests(BasePortfolioTestCase):
         """Verify that the experience form rejects a submission without required data."""
         form = ExperienceForm(data={})
 
-        # See the earlier assertTrue example: assertFalse verifies invalid form state.
         self.assertFalse(form.is_valid())
-        # assertIn checks that a required field appears in the form errors.
         self.assertIn("title", form.errors)
+
+    def test_create_experience_ajax_returns_created_experience(self):
+        self.login_as_owner()
+        response = self.client.post(
+            reverse("main:create_experience_ajax"),
+            {
+                "title": "AJAX Experience",
+                "description": "Created from the experience modal.",
+                "category": "research",
+                "thumbnail": "https://example.com/experience.jpg",
+                "ended_at": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertTrue(Experience.objects.filter(title="AJAX Experience").exists())
+        self.assertEqual(response.json()["message"], "Experience added successfully.")
