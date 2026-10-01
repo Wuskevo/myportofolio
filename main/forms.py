@@ -23,6 +23,7 @@ class ExperienceForm(ModelForm):
             "description",
             "category",
             "thumbnail",
+            "started_at",
             "ended_at",
         ]
 
@@ -31,6 +32,7 @@ class ExperienceForm(ModelForm):
             "description": "Experience Description",
             "category": "Experience Category",
             "thumbnail": "Thumbnail URL",
+            "started_at": "Start Date",
             "ended_at": "End Date",
         }
 
@@ -52,6 +54,13 @@ class ExperienceForm(ModelForm):
                 attrs={
                     "placeholder": "https://example.com/thumbnail.jpg",
                 }
+            ),
+            "started_at": DateTimeInput(
+                format="%Y-%m-%dT%H:%M",
+                attrs={
+                    "type": "datetime-local",
+                    "placeholder": "YYYY-MM-DDTHH:MM",
+                },
             ),
             "ended_at": DateTimeInput(
                 format="%Y-%m-%dT%H:%M",

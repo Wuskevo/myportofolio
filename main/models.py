@@ -1,3 +1,4 @@
+from django.utils import timezone
 import uuid
 
 from django.contrib.auth.models import User
@@ -24,7 +25,7 @@ class Experience(models.Model):
         default="full-time",
     )
     thumbnail = models.URLField(blank=True, null=True)
-    started_at = models.DateTimeField(auto_now_add=True)
+    started_at = models.DateTimeField(default=timezone.now)
     ended_at = models.DateTimeField(blank=True, null=True)
     starred_by = models.ManyToManyField(
         User, related_name="starred_experiences", blank=True
@@ -37,16 +38,19 @@ class Experience(models.Model):
     def is_ongoing(self):
         return self.ended_at is None
 
+
 """
 Added this instead of achievements and certifications because there is a lot of overlap currently
 Instead of complicated inheritance, enums are used, following the pattern from [Experience]
 """
+
+
 class Credential(models.Model):
     CREDENTIAL_CATEGORIES = [
         ("certification", "Certification"),
         ("award", "Award"),
         ("competition", "Competition"),
-        ("scholarship", "Scholarship")
+        ("scholarship", "Scholarship"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -71,11 +75,7 @@ class Credential(models.Model):
     credential_url = models.URLField(blank=True)
 
     ## image relevant to this credential like trophy, certificate, badge, etc
-    image = models.ImageField(
-        upload_to="credentials/",
-        blank=True,
-        null=True
-    )
+    image = models.ImageField(upload_to="credentials/", blank=True, null=True)
 
     @classmethod
     def grouped_by_category(cls):
@@ -83,24 +83,24 @@ class Credential(models.Model):
             value: cls.objects.filter(category=value)
             for value, label in cls.CREDENTIAL_CATEGORIES
         }
-    
+
 
 class Project(models.Model):
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	title = models.CharField(max_length=255)
-	description = models.TextField()
-	tech_stack = models.CharField(max_length=255) # tech used and relevant tags
-	project_url = models.URLField(blank=True)
-	project_image_url = models.URLField(blank=True, max_length=255)
-	# one project can be starred by many users,
-	# and one user can star many projects
-	starred_by = models.ManyToManyField(
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    tech_stack = models.CharField(max_length=255)  # tech used and relevant tags
+    project_url = models.URLField(blank=True)
+    project_image_url = models.URLField(blank=True, max_length=255)
+    # one project can be starred by many users,
+    # and one user can star many projects
+    starred_by = models.ManyToManyField(
         User, related_name="starred_projects", blank=True
     )
 
-	def __str__(self):
-		return self.title
+    def __str__(self):
+        return self.title
 
-	@property
-	def tech_stack_items(self):
-		return [item.strip() for item in self.tech_stack.split(",") if item.strip()]
+    @property
+    def tech_stack_items(self):
+        return [item.strip() for item in self.tech_stack.split(",") if item.strip()]
