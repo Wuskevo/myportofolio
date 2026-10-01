@@ -1,5 +1,7 @@
 """Tests for experience model behavior, pages, forms, and JSON endpoints."""
 
+from datetime import timedelta
+
 from django.contrib.auth.models import Group, Permission, User
 from django.urls import reverse
 from django.utils import timezone
@@ -33,6 +35,8 @@ class ExperienceTests(BasePortfolioTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "experiences.html")
         self.assertContains(response, 'id="experience-search-form"')
+        self.assertContains(response, 'id="experience-sort"')
+        self.assertContains(response, 'class="experience-timeline hide"')
         self.assertContains(response, 'id="grid"')
         self.assertContains(response, 'id="loading"')
         self.assertContains(response, 'id="error"')
@@ -69,6 +73,124 @@ class ExperienceTests(BasePortfolioTestCase):
         self.assertContains(response, "Competitive Programming Coach")
         # See the earlier negative-content assertion: assertNotContains checks excluded data.
         self.assertNotContains(response, self.experience.title)
+
+    def test_experiences_json_endpoint_sorts_by_start_date(self):
+        now = timezone.now()
+        middle_experience = Experience.objects.create(
+            title="Middle Experience",
+            description="Middle experience description.",
+            category="research",
+        )
+        newest_experience = Experience.objects.create(
+            title="Newest Experience",
+            description="Newest experience description.",
+            category="research",
+        )
+        Experience.objects.filter(pk=self.experience.pk).update(
+            started_at=now - timedelta(days=90)
+        )
+        Experience.objects.filter(pk=middle_experience.pk).update(
+            started_at=now - timedelta(days=60)
+        )
+        Experience.objects.filter(pk=newest_experience.pk).update(
+            started_at=now - timedelta(days=30)
+        )
+
+        for sort_order, expected_ids in (
+            (
+                "start-desc",
+                [newest_experience.pk, middle_experience.pk, self.experience.pk],
+            ),
+            (
+                "start-asc",
+                [self.experience.pk, middle_experience.pk, newest_experience.pk],
+            ),
+        ):
+            with self.subTest(sort=sort_order):
+                response = self.client.get(
+                    reverse("main:get_experiences_json"),
+                    {"sort": sort_order},
+                )
+                self.assertEqual(
+                    [entry["pk"] for entry in response.json()],
+                    [str(experience_id) for experience_id in expected_ids],
+                )
+
+    def test_experiences_json_endpoint_combines_title_filter_and_sort(self):
+        now = timezone.now()
+        older_match = Experience.objects.create(
+            title="Matching Older Role",
+            description="Older matching role description.",
+            category="research",
+        )
+        newer_match = Experience.objects.create(
+            title="Matching Newer Role",
+            description="Newer matching role description.",
+            category="research",
+        )
+        Experience.objects.filter(pk=older_match.pk).update(
+            started_at=now - timedelta(days=60)
+        )
+        Experience.objects.filter(pk=newer_match.pk).update(
+            started_at=now - timedelta(days=30)
+        )
+
+        response = self.client.get(
+            reverse("main:get_experiences_json"),
+            {"title": "matching", "sort": "start-asc"},
+        )
+
+        self.assertEqual(
+            [entry["pk"] for entry in response.json()],
+            [str(older_match.pk), str(newer_match.pk)],
+        )
+
+    def test_experiences_json_endpoint_sorts_end_dates_with_ongoing_first(self):
+        now = timezone.now()
+        older_completed = Experience.objects.create(
+            title="Older Completed Experience",
+            description="Older completed experience description.",
+            category="research",
+            ended_at=now - timedelta(days=30),
+        )
+        newer_completed = Experience.objects.create(
+            title="Newer Completed Experience",
+            description="Newer completed experience description.",
+            category="research",
+            ended_at=now - timedelta(days=1),
+        )
+
+        for sort_order, expected_ids in (
+            (
+                "end-desc",
+                [self.experience.pk, newer_completed.pk, older_completed.pk],
+            ),
+            (
+                "end-asc",
+                [self.experience.pk, older_completed.pk, newer_completed.pk],
+            ),
+        ):
+            with self.subTest(sort=sort_order):
+                response = self.client.get(
+                    reverse("main:get_experiences_json"),
+                    {"sort": sort_order},
+                )
+                self.assertEqual(
+                    [entry["pk"] for entry in response.json()],
+                    [str(experience_id) for experience_id in expected_ids],
+                )
+
+    def test_experience_page_preserves_selected_sort_option(self):
+        response = self.client.get(
+            reverse("main:show_experiences"),
+            {"sort": "end-asc"},
+        )
+
+        self.assertEqual(response.context["sort_query"], "end-asc")
+        self.assertRegex(
+            response.content.decode(),
+            r'<option value="end-asc"\s+selected>End: oldest</option>',
+        )
 
     def test_experience_page_displays_database_data(self):
         """Verify that the experience page configures the client-side JSON fetch."""

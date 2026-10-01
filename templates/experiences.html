@@ -26,7 +26,7 @@
                 <form method="get"
                       action="{% url 'main:show_experiences' %}"
                       id="experience-search-form"
-                      class="search-bar-1">
+                      class="search-bar-1 experience-search">
                     <input type="search"
                            id="search-input"
                            name="title"
@@ -34,6 +34,15 @@
                            placeholder="Search by experience title"
                            class="search-input-1"
                            aria-label="Search by experience title" />
+                    <label class="experience-sort-control" for="experience-sort">
+                        <span>Sort by</span>
+                        <select id="experience-sort" name="sort">
+                            {% for value, label in experience_sort_options %}
+                                <option value="{{ value }}"
+                                        {% if sort_query == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
                     <button type="submit" class="button">Search</button>
                 </form>
                 <!-- Loading State -->
@@ -49,7 +58,7 @@
                     <p>No experiences have been added or found yet.</p>
                 </div>
                 <!-- Experience listing grid -->
-                <div id="grid" class="listing-grid hide"></div>
+                <div id="grid" class="experience-timeline hide"></div>
             </div>
         </section>
     </main>
@@ -72,6 +81,7 @@
     const gridContainer = document.getElementById('grid');
     const searchForm = document.getElementById('experience-search-form');
     const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('experience-sort');
     const CREATE_EXPERIENCE_ENDPOINT = "{% url 'main:create_experience_ajax' %}";
     const experienceForm = document.getElementById('experience-form');
     if (experienceForm) {
@@ -130,23 +140,31 @@
 
         const startDate = formatDate(experience.started_at);
         const endDate = formatDate(experience.ended_at);
-        const dateRangeHtml = startDate || endDate
-            ? `<p class="experience-date-range">${escapeHtml(startDate || 'Unknown')} - ${escapeHtml(endDate || 'Present')}</p>`
-            : '';
-
-        const metaHtml = `
-            <div class="listing-card">
-                <span class="listing-category">${escapeHtml(categoryLabel)}</span>
-                <span class="listing-status">${escapeHtml(statusText)}</span>
-            </div>
+        const dateRangeHtml = `
+            <p class="experience-card__dates">
+                <span>${escapeHtml(startDate || 'Start date unknown')}</span>
+                <span aria-hidden="true">-</span>
+                <span>${escapeHtml(endDate || (experience.ended_at ? 'End date unknown' : 'Present'))}</span>
+            </p>
         `;
 
-        articleElement.innerHTML = `
-            ${imageHtml}
-            <h2>${escapeHtml(experience.title)}</h2>
-            ${metaHtml}
-            ${dateRangeHtml}
-            <p class="listing-description">${escapeHtml(experience.description)}</p>
+        const panel = document.createElement('div');
+        panel.className = 'experience-card__panel';
+        panel.innerHTML = `
+            <div class="experience-card__media">${imageHtml}</div>
+            <div class="experience-card__body">
+                <div class="experience-card__heading">
+                    <div>
+                        ${dateRangeHtml}
+                        <h2>${escapeHtml(experience.title)}</h2>
+                    </div>
+                    <div class="experience-card__meta">
+                        <span class="listing-category">${escapeHtml(categoryLabel)}</span>
+                        <span class="listing-status">${escapeHtml(statusText)}</span>
+                    </div>
+                </div>
+                <p class="listing-description">${escapeHtml(experience.description)}</p>
+            </div>
         `;
 
         // A dummy UUID used as a placeholder to be replaced with the real ID from the JSON data
@@ -229,7 +247,8 @@
         }
 
         actions.appendChild(managementActions);
-        articleElement.appendChild(actions);
+        panel.querySelector('.experience-card__body').appendChild(actions);
+        articleElement.appendChild(panel);
         return articleElement;
     }
 
@@ -242,7 +261,9 @@
 			if (!silent) displayPageSection({ showLoading: true });
             displayPageSection({ showLoading: true });
             
-            const url = searchQuery ? `${BASE_EXPERIENCE_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_EXPERIENCE_ENDPOINT;
+            const params = new URLSearchParams({ sort: sortSelect.value });
+            if (searchQuery) params.set('title', searchQuery);
+            const url = `${BASE_EXPERIENCE_ENDPOINT}?${params.toString()}`;
             
             const response = await fetch(url, {
                 headers: { 'Accept': 'application/json' },
@@ -286,6 +307,13 @@
             event.preventDefault();
             clearTimeout(searchDebounceTimer);
             searchExperience();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            clearTimeout(searchDebounceTimer);
+            fetchExperience(searchInput.value.trim());
         });
     }
 

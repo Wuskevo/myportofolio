@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Case, F, IntegerField, Value, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -9,6 +10,36 @@ from main.forms import ExperienceForm
 from main.models import Experience
 
 from .common import NAME, filter_by_title, is_editor_user
+
+EXPERIENCE_SORT_OPTIONS = (
+    ("start-desc", "Start: newest"),
+    ("start-asc", "Start: oldest"),
+    ("end-desc", "End: newest"),
+    ("end-asc", "End: oldest"),
+)
+DEFAULT_EXPERIENCE_SORT = "start-desc"
+EXPERIENCE_SORT_ORDERINGS = {
+    "start-desc": ("-started_at", "-id"),
+    "start-asc": ("started_at", "id"),
+    "end-desc": (
+        Case(
+            When(ended_at__isnull=True, then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        ),
+        F("ended_at").desc(),
+        "id",
+    ),
+    "end-asc": (
+        Case(
+            When(ended_at__isnull=True, then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        ),
+        "ended_at",
+        "id",
+    ),
+}
 
 
 @login_required(login_url="/login/")
@@ -32,9 +63,14 @@ def create_experience(request):
 
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
+    sort_query = request.GET.get("sort", DEFAULT_EXPERIENCE_SORT)
+    ordering = EXPERIENCE_SORT_ORDERINGS.get(
+        sort_query,
+        EXPERIENCE_SORT_ORDERINGS[DEFAULT_EXPERIENCE_SORT],
+    )
     experiences = filter_by_title(
         Experience.objects.prefetch_related("starred_by"), title_query
-    )
+    ).order_by(*ordering)
 
     data = []
     for experience in experiences:
@@ -67,11 +103,15 @@ def get_experiences_json(request):
 
 def show_experiences(request):
     title_query = request.GET.get("title", "").strip()
-    experiences = filter_by_title(Experience.objects.all(), title_query)
+    sort_query = request.GET.get("sort", DEFAULT_EXPERIENCE_SORT)
+    if sort_query not in EXPERIENCE_SORT_ORDERINGS:
+        sort_query = DEFAULT_EXPERIENCE_SORT
 
     context = {
         "name": NAME,
         "title_query": title_query,
+        "sort_query": sort_query,
+        "experience_sort_options": EXPERIENCE_SORT_OPTIONS,
         "is_editor": is_editor_user(request.user),
         "form": ExperienceForm(),
     }
