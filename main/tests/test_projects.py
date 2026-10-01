@@ -16,34 +16,17 @@ class ProjectTests(BasePortfolioTestCase):
             project_url="https://example.com/portfolio",
         )
 
-    def test_anonymous_user_reads_projects_without_mutation_controls(self):
-        """Visitors can read projects and star counts without action controls."""
+    def test_anonymous_user_can_load_projects_page(self):
+        """Visitors receive the project page shell without the owner modal."""
         response = self.client.get(reverse("main:show_projects"))
 
-        # The response and template checks confirm the expected page is rendered.
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "projects.html")
-        # Check project data while mutation controls remain hidden.
-        self.assertContains(response, self.project.title)
-        self.assertContains(response, self.project.description)
-        self.assertContains(response, f'href="{self.project.project_url}"')
-        self.assertContains(response, 'class="project-image-placeholder"')
-        self.assertNotContains(response, reverse("main:create_project"))
-        self.assertNotContains(
-            response,
-            reverse("main:update_project", args=[self.project.id]),
-        )
-        self.assertNotContains(
-            response,
-            reverse("main:delete_project", args=[self.project.id]),
-        )
-        self.assertNotContains(
-            response,
-            reverse("main:toggle_project_star", args=[self.project.id]),
-        )
-        self.assertContains(response, "★ 0")
+        self.assertContains(response, 'id="grid"')
+        self.assertFalse(response.context["is_editor"])
+        self.assertNotContains(response, 'id="add-project-modal"')
 
-    def test_editor_sees_project_edit_but_not_create_or_delete(self):
+    def test_editor_page_has_editor_context_without_add_modal(self):
         editor = User.objects.create_user(username="editor", password="password")
         permission = Permission.objects.get(
             content_type__app_label="main",
@@ -56,17 +39,10 @@ class ProjectTests(BasePortfolioTestCase):
 
         response = self.client.get(reverse("main:show_projects"))
 
-        self.assertContains(
-            response,
-            reverse("main:update_project", args=[self.project.id]),
-        )
-        self.assertNotContains(response, reverse("main:create_project"))
-        self.assertNotContains(
-            response,
-            reverse("main:delete_project", args=[self.project.id]),
-        )
+        self.assertTrue(response.context["is_editor"])
+        self.assertNotContains(response, 'id="add-project-modal"')
 
-    def test_superuser_sees_all_project_actions(self):
+    def test_superuser_page_renders_add_project_modal(self):
         owner = User.objects.create_superuser(
             username="owner",
             email="owner@example.com",
@@ -76,15 +52,9 @@ class ProjectTests(BasePortfolioTestCase):
 
         response = self.client.get(reverse("main:show_projects"))
 
-        self.assertContains(response, reverse("main:create_project"))
-        self.assertContains(
-            response,
-            reverse("main:update_project", args=[self.project.id]),
-        )
-        self.assertContains(
-            response,
-            reverse("main:delete_project", args=[self.project.id]),
-        )
+        self.assertContains(response, 'id="add-project-modal"')
+        ajax_url = reverse("main:create_project_ajax")
+        self.assertContains(response, f'action="{ajax_url}"')
 
     def test_projects_json_endpoint_returns_projects(self):
         """Verify that the project JSON endpoint returns stored project data."""
@@ -158,21 +128,16 @@ class ProjectTests(BasePortfolioTestCase):
         self.assertContains(response, "Game Jam Entry")
         self.assertNotContains(response, self.project.title)
 
-    def test_projects_page_filters_by_title(self):
-        """Verify that title searches filter projects on the HTML page."""
-        Project.objects.create(
-            title="Game Jam Entry",
-            description="A small game jam project.",
-            tech_stack="Godot, GDScript",
-        )
-
+    def test_projects_page_preserves_title_query_for_client_search(self):
+        """The page keeps the query that its JavaScript sends to the JSON API."""
         response = self.client.get(
             reverse("main:show_projects"),
             {"title": "game"},
         )
 
-        self.assertContains(response, "Game Jam Entry")
-        self.assertNotContains(response, self.project.title)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="title"')
+        self.assertContains(response, 'value="game"')
 
     def test_create_project_ajax_returns_created_project(self):
         self.login_as_owner()

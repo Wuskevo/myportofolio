@@ -126,6 +126,63 @@ def logout_from_site(driver, wait, base_url):
     wait.until(EC.url_to_be(f"{base_url}/"))
 
 
+def check_project_page_controls(driver, wait, base_url, project, role):
+    driver.get(f"{base_url}{reverse('main:show_projects')}")
+
+    def find_project_card(browser):
+        for card in browser.find_elements(By.CSS_SELECTOR, ".project-card"):
+            headings = card.find_elements(By.CSS_SELECTOR, "h2")
+            if headings and headings[0].text == project.title:
+                return card
+        return False
+
+    card = wait.until(find_project_card)
+    actual_controls = {
+        "star_form": bool(card.find_elements(By.CSS_SELECTOR, ".star-form")),
+        "guest_star_count": bool(
+            card.find_elements(By.CSS_SELECTOR, ".star-count-guest")
+        ),
+        "edit": bool(card.find_elements(By.CSS_SELECTOR, ".button-secondary")),
+        "delete": bool(card.find_elements(By.CSS_SELECTOR, ".button-danger")),
+        "add": bool(driver.find_elements(By.CSS_SELECTOR, ".project-add-button")),
+    }
+    expected_controls = {
+        "Anonymous": {
+            "star_form": False,
+            "guest_star_count": True,
+            "edit": False,
+            "delete": False,
+            "add": False,
+        },
+        "Regular user": {
+            "star_form": True,
+            "guest_star_count": False,
+            "edit": False,
+            "delete": False,
+            "add": False,
+        },
+        "Editor": {
+            "star_form": True,
+            "guest_star_count": False,
+            "edit": True,
+            "delete": False,
+            "add": False,
+        },
+        "Superuser": {
+            "star_form": True,
+            "guest_star_count": False,
+            "edit": True,
+            "delete": True,
+            "add": True,
+        },
+    }
+
+    assert actual_controls == expected_controls[role], (
+        f"{role} saw unexpected project controls: {actual_controls}"
+    )
+    print(f"[PASS] {role} project page controls verified")
+
+
 def check_crud_authorization(driver, wait, base_url, records, role, allowed_operations):
     for section, routes in crud_routes(records).items():
         for operation in ("create", "update", "delete"):
@@ -175,6 +232,13 @@ def main():
         assert csrf.get_attribute("value")
         assert driver.get_cookie("csrftoken")
         print("[PASS] CSRF token and cookie verified")
+        check_project_page_controls(
+            driver,
+            wait,
+            base_url,
+            records["project"],
+            "Anonymous",
+        )
 
         # 2. Verify regular user login and CRUD authorization
         login_as(driver, wait, base_url, "burhan_test", USER_PASSWORD)
@@ -182,11 +246,25 @@ def main():
         assert driver.get_cookie("last_login")
         assert "Sesi Terakhir Login" in driver.page_source or "Last Login" in driver.page_source
         print("[PASS] Regular user login and session cookies verified")
+        check_project_page_controls(
+            driver,
+            wait,
+            base_url,
+            records["project"],
+            "Regular user",
+        )
         check_crud_authorization(driver, wait, base_url, records, "Regular user", set())
 
         # 3. Editors may update, but cannot create or delete portfolio data.
         logout_from_site(driver, wait, base_url)
         login_as(driver, wait, base_url, "editor_test", USER_PASSWORD)
+        check_project_page_controls(
+            driver,
+            wait,
+            base_url,
+            records["project"],
+            "Editor",
+        )
         check_crud_authorization(
             driver,
             wait,
@@ -199,6 +277,13 @@ def main():
         # 4. Superusers may create, update, and delete all portfolio data.
         logout_from_site(driver, wait, base_url)
         login_as(driver, wait, base_url, "admin_test", ADMIN_PASSWORD)
+        check_project_page_controls(
+            driver,
+            wait,
+            base_url,
+            records["project"],
+            "Superuser",
+        )
         check_crud_authorization(
             driver,
             wait,
