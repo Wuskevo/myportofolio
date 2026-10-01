@@ -8,6 +8,7 @@ from .credentials import (
 )
 from .experiences import (
     create_experience,
+    create_experience_ajax,
     delete_experience,
     get_experiences_json,
     show_experiences,

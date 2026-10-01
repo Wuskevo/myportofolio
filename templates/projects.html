@@ -15,11 +15,6 @@
             <div class="container">
                 <p class="section-kicker">My Works and Craft</p>
                 <div class="section-header">
-                    <!--<button class="button button-secondary"	
-                            type="button"
-                            onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
-                        Test Toast Notification
-                    </button>-->
                     <h1>Projects</h1>
                     {% if user.is_superuser %}
                         <button type="button"
@@ -324,7 +319,7 @@
 				requestAnimationFrame(() => {
 					window.scrollTo({ top: scrollY, behavior: 'instant' });
 				});
-				//showToast('Success', 'New project added successfully!', 'success');
+				showToast('Success', 'New project added successfully!', 'success');
 				fetchProjects(searchInput.value.trim(), { silent: true });
 			} else {
                 const errorMessages = result.errors

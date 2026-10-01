@@ -53,7 +53,7 @@ def get_projects_json(request):
                 "fields": {
                     "title": project.title,
                     "description": project.description,
-                    "tech_stack": project.tech_stack,
+                    "tech_stack": project.tech_stack,	
                     "project_url": project.project_url,
                     "project_image_url": project.project_image_url,
                     "star_count": len(starred_users),

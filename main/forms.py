@@ -62,6 +62,15 @@ class ExperienceForm(ModelForm):
             ),
         }
 
+        def clean_title(self):
+            title = strip_tags(self.cleaned_data["title"]).strip()
+            if not title:
+                raise ValidationError("Project name can't contain only HTML tags.")
+            return title
+
+        def clean_description(self):
+            return strip_tags(self.cleaned_data["description"]).strip()
+
 
 class CredentialForm(ModelForm):
     class Meta:
@@ -127,41 +136,38 @@ class CredentialForm(ModelForm):
             ),
             "image": FileInput(),
         }
-        
+
 
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = [
-			"title",
+            "title",
             "description",
             "tech_stack",
             "project_url",
             "project_image_url",
-		]
-        
+        ]
+
         labels = {
-			"title": "Project Name",
+            "title": "Project Name",
             "description": "Project Description",
             "tech_stack": "Tech Usedd",
             "project_url": "Project URL",
             "project_image_url": "Project Image URL",
-		}
-        
+        }
+
         widgets = {
-			"title": TextInput(
-       			attrs={
-       				"placeholder": "Portfolio Website",
-					"maxlength": 255
-            	}
-          	),
-			"description": Textarea(
-				attrs={
+            "title": TextInput(
+                attrs={"placeholder": "Portfolio Website", "maxlength": 255}
+            ),
+            "description": Textarea(
+                attrs={
                     "placeholder": "Tell us about your project",
                     "rows": 3,
                 }
-			),
-			"tech_stack": TextInput(
+            ),
+            "tech_stack": TextInput(
                 attrs={
                     "placeholder": "Django, Python, HTML, CSS",
                 }
@@ -176,17 +182,16 @@ class ProjectForm(ModelForm):
                     "placeholder": "https://drive.google.com/thumbnail?id=...&sz=w1000",
                 }
             ),
+        }
 
-		}
-        
         def clean_title(self):
             title = strip_tags(self.cleaned_data["title"]).strip()
             if not title:
                 raise ValidationError("Project name can't contain only HTML tags.")
             return title
-        
+
         def clean_tech_stack(self):
             return strip_tags(self.cleaned_data["tech_stack"]).strip()
-        
+
         def clean_description(self):
             return strip_tags(self.cleaned_data["description"]).strip()
