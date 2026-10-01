@@ -74,6 +74,19 @@ Once that JSON arrives at a client (like a mobile app or frontend JavaScript), t
 - Copilot helped update the role and CRUD tests, expand the Selenium checks to cover the three portfolio sections, and adjust card spacing when controls are hidden.
 - Copilot helped moved parts of huge scripts (like views) into modular scripts.
 
+### Assignment 5
+
+1. Debouncing waits for a short period after the user stops typing before sending a search request. In this project, the search waits 300 milliseconds and resets the timer whenever another keystroke arrives. This prevents an AJAX request for every character, reducing unnecessary server work and network traffic. The existing `AbortController` also cancels an older in-flight request when a newer search starts.
+2. `fetch()` returns a Promise, so `await` pauses the current `async` function until the response arrives. This lets the code safely inspect properties such as `response.ok` and then await `response.json()`. Without `await`, the variable would still be a Promise, so response checks and JSON parsing would happen before the HTTP response was available.
+3. A Cross-Site Scripting (XSS) attack occurs when untrusted input is treated as executable HTML or JavaScript, allowing an attacker to run code in another user's browser. Django templates escape variable output by default, but JavaScript that inserts AJAX data using `innerHTML` can bypass that protection if values are interpolated without escaping. AJAX is not inherently more vulnerable; the risk comes from how the client builds the page. In this project, dynamic values are escaped before insertion, and safer DOM APIs such as `textContent` are used for text.
+
+#### Copilot Limitations and My Critical Review
+
+- Copilot helped trace the `started_at` test failures, but it could not choose the product requirement for me. I decided the field should default to the current time and remain editable, so I changed it to `default=timezone.now` and added migration `0009` rather than keeping `auto_now_add=True` or weakening validation.
+- After that change made `started_at` required in submitted forms, I checked the actual form error and corrected the update and AJAX-create test payloads to include realistic `datetime-local` values instead of making the field optional just to satisfy old tests.
+- Copilot's first card-action refactors did not fully match the intended layout, even after several iterations. I manually edited the HTML and CSS to correct the remaining issues: keeping project and experience star/edit/delete buttons in one row, preserving the credential card layout, and hiding a missing verification button while reserving its space instead of showing fallback text.
+- Copilot can reason from stale context and automated Django tests do not verify visual appearance in a browser. I checked the current files and test failures, pointed out the remaining layout and template mismatches, and used the focused tests to confirm the resulting behavior.
+
 ### Chat History
 
 The following will use the format:
