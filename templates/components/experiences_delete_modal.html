@@ -1,8 +1,10 @@
+{% comment %}
+Unused legacy partial. Experience card delete actions are rendered by experiences.html JavaScript.
 <button type="button"
         class="button button-danger"
         popovertarget="delete-experience-{{ experience.id }}"
         aria-label="Remove {{ experience.title }}"
-        title="Remove experience">Remove Experience</button>
+        title="Remove experience">Remove</button>
 <div id="delete-experience-{{ experience.id }}"
      class="delete-modal"
      popover="auto"
@@ -38,3 +40,4 @@
         </div>
     </div>
 </div>
+{% endcomment %}

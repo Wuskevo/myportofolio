@@ -52,11 +52,14 @@
                 </div>
                 <!-- Project Grid -->
                 <div id="grid" class="project-grid hide">
-                    <!--{% for project in project_list %}
+                    {% comment %}
+                    Obsolete server-rendered cards; projects.html builds these in JavaScript.
+                    {% for project in project_list %}
                         {% include "components/project_card.html" with project=project heading_level="h2" show_actions=True %}
                     {% empty %}
                         <p class="empty-state">No Projects added yet.</p>
-                    {% endfor %}-->
+                    {% endfor %}
+                    {% endcomment %}
                 </div>
             </div>
         </section>
@@ -146,7 +149,7 @@
             .replace('00000000-0000-0000-0000-000000000000', projectId);
 
         const actions = document.createElement('div');
-        actions.className = 'item-actions project-card-actions';
+        actions.className = 'card-action-controls project-card-actions';
 
         if (IS_AUTHENTICATED) {
             const starForm = document.createElement('form');
@@ -167,7 +170,7 @@
                 ? `Starred by ${project.starred_by_names}`
                 : 'Be the first to star';
             starButton.appendChild(document.createTextNode('★ '));
-            starButton.appendChild(document.createTextNode(project.is_starred ? 'Unstar' : 'Star'));
+            // starButton.appendChild(document.createTextNode(project.is_starred ? 'Unstar' : 'Star'));
 
             const starCount = document.createElement('span');
             starCount.className = 'star-count';
@@ -183,13 +186,13 @@
             actions.appendChild(starCount);
         }
 
-        const managementActions = document.createElement('div');
+        // const managementActions = document.createElement('div');
         if (IS_SUPERUSER || IS_EDITOR) {
             const editLink = document.createElement('a');
             editLink.href = editUrl;
             editLink.className = 'button button-secondary';
-            editLink.textContent = 'Edit Project';
-            managementActions.appendChild(editLink);
+            editLink.textContent = 'Update';
+            actions.appendChild(editLink);
         }
 
         if (IS_SUPERUSER) {
@@ -213,10 +216,10 @@
                 }
             });
             deleteForm.appendChild(deleteButton);
-            managementActions.appendChild(deleteForm);
+            actions.appendChild(deleteForm);
         }
 
-        actions.appendChild(managementActions);
+        // actions.appendChild(managementActions);
         articleElement.appendChild(actions);
         return articleElement;
     }

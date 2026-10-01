@@ -250,6 +250,7 @@ class ExperienceTests(BasePortfolioTestCase):
                 "description": "Updated experience description.",
                 "category": "research",
                 "thumbnail": "https://example.com/updated.jpg",
+                "started_at": self.experience.started_at.strftime("%Y-%m-%dT%H:%M"),
                 "ended_at": "",
             },
         )
@@ -368,6 +369,7 @@ class ExperienceTests(BasePortfolioTestCase):
                 "description": "Created from the experience modal.",
                 "category": "research",
                 "thumbnail": "https://example.com/experience.jpg",
+                "started_at": "2026-09-18T09:00",
                 "ended_at": "",
             },
         )

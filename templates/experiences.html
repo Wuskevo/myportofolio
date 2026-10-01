@@ -176,7 +176,9 @@
             .replace('00000000-0000-0000-0000-000000000000', experienceId);
 
         const actions = document.createElement('div');
-        actions.className = 'item-actions experience-card-actions';
+        actions.className = 'card-action-footer';
+        const actionControls = document.createElement('div');
+        actionControls.className = 'card-action-controls';
 
         if (IS_AUTHENTICATED) {
             const starForm = document.createElement('form');
@@ -197,29 +199,28 @@
                 ? `Starred by ${experience.starred_by_names}`
                 : 'Be the first to star';
             starButton.appendChild(document.createTextNode('★ '));
-            starButton.appendChild(document.createTextNode(experience.is_starred ? 'Unstar' : 'Star'));
+            // starButton.appendChild(document.createTextNode(experience.is_starred ? 'Unstar' : 'Star'));
 
             const starCount = document.createElement('span');
             starCount.className = 'star-count';
             starCount.textContent = experience.star_count;
             starButton.appendChild(starCount);
             starForm.appendChild(starButton);
-            actions.appendChild(starForm);
+            actionControls.appendChild(starForm);
         } else {
             const starCount = document.createElement('span');
             starCount.className = 'star-count star-count-guest';
             starCount.setAttribute('aria-label', 'Star count');
             starCount.textContent = `★ ${experience.star_count}`;
-            actions.appendChild(starCount);
+            actionControls.appendChild(starCount);
         }
 
-        const managementActions = document.createElement('div');
         if (IS_SUPERUSER || IS_EDITOR) {
             const editLink = document.createElement('a');
             editLink.href = editUrl;
             editLink.className = 'button button-secondary';
-            editLink.textContent = 'Edit Experience';
-            managementActions.appendChild(editLink);
+            editLink.textContent = 'Update';
+            actionControls.appendChild(editLink);
         }
 
         if (IS_SUPERUSER) {
@@ -243,10 +244,10 @@
                 }
             });
             deleteForm.appendChild(deleteButton);
-            managementActions.appendChild(deleteForm);
+            actionControls.appendChild(deleteForm);
         }
 
-        actions.appendChild(managementActions);
+        actions.appendChild(actionControls);
         panel.querySelector('.experience-card__body').appendChild(actions);
         articleElement.appendChild(panel);
         return articleElement;

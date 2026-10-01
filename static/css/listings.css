@@ -277,15 +277,15 @@
     margin-top: var(--space-lg);
 }
 
-.experience-card-actions {
-    margin-top: auto;
+.experience-card .card-action-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .item-actions {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-xl);
+    align-self: center;
+    gap: var(--space-md);
     min-height: 3rem;
     margin-top: var(--space-lg);
 }

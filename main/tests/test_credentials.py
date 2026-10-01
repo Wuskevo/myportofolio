@@ -48,7 +48,7 @@ class CredentialTests(BasePortfolioTestCase):
             self.assertContains(response, category_headings[category])
 
         self.assertNotContains(response, 'title="Remove credential"')
-        self.assertNotContains(response, "Edit Credential")
+        self.assertNotContains(response, "Update Credential")
         self.assertNotContains(response, reverse("main:create_credential"))
 
     def test_editor_sees_credential_edit_but_not_create_or_delete(self):
@@ -64,7 +64,7 @@ class CredentialTests(BasePortfolioTestCase):
 
         response = self.client.get(reverse("main:show_credentials"))
 
-        self.assertContains(response, "Edit Credential", count=4)
+        self.assertContains(response, ">Update</a>", count=4)
         self.assertNotContains(response, 'title="Remove credential"')
         self.assertNotContains(response, reverse("main:create_credential"))
 
@@ -80,7 +80,7 @@ class CredentialTests(BasePortfolioTestCase):
 
         self.assertContains(response, reverse("main:create_credential"))
         self.assertContains(response, 'title="Remove credential"', count=4)
-        self.assertContains(response, "Edit Credential", count=4)
+        self.assertContains(response, ">Update</a>", count=4)
 
     def test_credentials_page_displays_database_data(self):
         """Verify that credential data appears on the credentials page."""
@@ -141,23 +141,22 @@ class CredentialTests(BasePortfolioTestCase):
         self.assertNotContains(response, "Never expires")
 
     def test_credential_url_states(self):
-        """Verify the displayed verification link and fallback text."""
+        """Verify the verification action and its reserved space when absent."""
         self.credentials["competition"].delete()
         self.credentials["award"].delete()
         self.credentials["scholarship"].delete()
         credential = self.credentials["certification"]
 
         response = self.client.get(reverse("main:show_credentials"))
-        # See the content assertion above: assertContains checks rendered content.
-        self.assertContains(response, "Verification not provided")
+        self.assertContains(response, "credential-link--placeholder")
+        self.assertNotContains(response, "Verification not provided")
 
         credential.credential_url = "https://example.com/verify"
         credential.save()
         response = self.client.get(reverse("main:show_credentials"))
         # See the content assertion above: assertContains checks rendered markup.
         self.assertContains(response, f'href="{credential.credential_url}"')
-        # See the earlier negative-content assertion: assertNotContains checks excluded content.
-        self.assertNotContains(response, "Verification not provided")
+        self.assertNotContains(response, "credential-link--placeholder")
 
     def test_credential_form_has_expected_fields(self):
         """Verify that the credential form exposes the expected model fields."""

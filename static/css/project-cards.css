@@ -3,132 +3,107 @@
    ======================================================================== */
 
 .project-grid {
-	justify-content: flex-start;
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	grid-auto-rows: 1fr;
-	gap: var(--space-2xl);
+    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: var(--space-2xl);
 }
 
 @media (max-width: 875px) {
-	.project-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+    .project-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 591px) {
-	.project-grid {
-		grid-template-columns: minmax(0, 1fr);
-	}
+    .project-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 .project-card {
-	background-color: var(--paper);
-	border: var(--line-width) solid var(--line);
-	border-radius: var(--radius);
-	padding: var(--space-xl);
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-md);
+    background-color: var(--paper);
+    border: var(--line-width) solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
 .project-card h2,
 .project-card h3 {
-	font-size: var(--font-lg);
+    font-size: var(--font-lg);
+    line-height: 1.2;
+    min-height: 5em;
+}
+
+.project-card h2 {
+    min-height: 2em;
 }
 
 .project-card p {
-	color: var(--text-muted);
-	font-size: var(--font-sm2);
+    color: var(--text-muted);
+    font-size: var(--font-sm2);
+}
+
+.project-card>p {
+    min-height: 5em;
+}
+
+.project-card .card-action-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: auto;
 }
 
 .project-image {
-	display: block;
-	width: 100%;
-	aspect-ratio: var(--aspect-photo);
-	object-fit: cover;
-	border-radius: var(--radius);
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--aspect-photo);
+    object-fit: cover;
+    border-radius: var(--radius);
 }
 
 .project-image-placeholder {
-	width: 100%;
-	aspect-ratio: var(--aspect-photo);
-	background-color: var(--ink);
-	border-radius: var(--radius);
+    width: 100%;
+    aspect-ratio: var(--aspect-photo);
+    background-color: var(--ink);
+    border-radius: var(--radius);
 }
 
 .tag-list {
-	display: flex;
-	flex-wrap: wrap;
-	align-content: flex-start;
-	min-height: 10rem;
-	gap: var(--space-xs);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    min-height: 5rem;
+    gap: var(--space-xs);
 }
 
 .tag {
-	font-size: var(--font-md);
-	font-weight: 400;
-	background-color: var(--line);
-	color: var(--paper);
-	padding: var(--space-2xs) var(--space-sm2);
-	border-radius: var(--radius);
+    font-size: var(--font-md);
+    font-weight: 400;
+    background-color: var(--line);
+    color: var(--paper);
+    padding: var(--space-2xs) var(--space-sm2);
+    border-radius: var(--radius);
 }
 
 .project-link {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-xs);
-	align-self: flex-start;
-	margin-top: var(--space-sm);
-	font-size: var(--font-sm);
-	font-weight: 400;
-	text-decoration: none;
-	color: var(--paper);
-	background-color: var(--accent);
-	border-radius: var(--radius);
-	padding: var(--space-sm) var(--space-lg2);
-	transition: background-color var(--transition-fast);
+    font-size: var(--font-sm);
+    text-decoration: none;
+    color: var(--paper);
+    background-color: var(--accent);
+    border-radius: var(--radius);
+    padding: var(--space-sm) var(--space-lg2);
+    transition: background-color var(--transition-fast);
 }
 
 .project-link:hover {
-	background-color: var(--accent-dark);
+    background-color: var(--accent-dark);
 }
 
 .project-link ion-icon {
-	font-size: var(--font-lg);
-	color: var(--paper);
-}
-
-/*.project-link:hover ion-icon {
-	color: var(--paper);
-}*/
-
-.project-card-actions {
-	flex-direction: column;
-	align-items: flex-start;
-	margin-top: auto;
-	min-height: 3rem;
-}
-
-.project-card-actions>.star-form,
-.project-card-actions>div {
-	width: 100%;
-}
-
-.project-card-actions>div {
-	display: grid;
-	gap: var(--space-sm);
-}
-
-.project-card-actions>div>form {
-	width: 100%;
-}
-
-.project-card-actions .button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	min-height: 3rem;
-	text-align: center;
+    font-size: var(--font-lg);
+    color: var(--paper);
 }

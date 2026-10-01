@@ -19,19 +19,21 @@
             {% endfor %}
         </div>
     {% endif %}
-    {% if project.project_url %}
-        <a href="{{ project.project_url }}"
-           class="project-link"
-           target="_blank"
-           rel="noopener">
-            <span>View project</span>
-            <ion-icon name="open-outline" aria-hidden="true"></ion-icon>
-        </a>
-    {% endif %}
-    {% if show_actions %}
-        <div class="item-actions project-card-actions">
-            {% include "components/project_star.html" with project=project %}
-            <div>
+    <div class="card-action-footer">
+        {% if project.project_url %}
+            <a href="{{ project.project_url }}"
+               class="button card-action-view project-link"
+               target="_blank"
+               rel="noopener">
+                <span>View project</span>
+                <ion-icon name="open-outline" aria-hidden="true"></ion-icon>
+            </a>
+        {% endif %}
+        {% comment %}
+        Project-page actions are added by the JavaScript card renderer.
+        {% if show_actions %}
+            <div class="card-action-controls">
+                {% include "components/project_star.html" with project=project %}
                 {% if user.is_superuser or is_editor %}
                     <a href="{% url 'main:update_project' project.id %}"
                        class="button button-secondary">Edit Project</a>
@@ -40,6 +42,7 @@
                     {% include "components/projects_delete_modal.html" with project=project %}
                 {% endif %}
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
+        {% endcomment %}
+    </div>
 </article>
