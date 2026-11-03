@@ -8,7 +8,7 @@ from django.db import models
 
 class Experience(models.Model):
     EXPERIENCE_CATEGORIES = [
-        ("internship", "Internship"),
+        ("internship", "Internship"),   
         ("research", "Research"),
         ("volunteer", "Volunteer"),
         ("part-time", "Part-Time"),
