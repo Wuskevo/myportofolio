@@ -4,6 +4,7 @@ from .credentials import (
     delete_credential,
     get_credentials_json,
     show_credentials,
+    toggle_credential_star,
     update_credential,
 )
 from .experiences import (

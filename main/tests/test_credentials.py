@@ -228,6 +228,34 @@ class CredentialTests(BasePortfolioTestCase):
         # See the earlier negative-content assertion: assertNotContains checks excluded data.
         self.assertNotContains(response, self.credentials["certification"].title)
 
+    def test_credentials_json_endpoint_includes_star_metadata(self):
+        user = User.objects.create_user(username="star-user", password="password")
+        credential = self.credentials["certification"]
+        credential.starred_by.add(user)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("main:get_credentials_json"))
+
+        credential_data = next(
+            item for item in response.json() if item["pk"] == str(credential.pk)
+        )
+        self.assertEqual(credential_data["fields"]["star_count"], 1)
+        self.assertTrue(credential_data["fields"]["is_starred"])
+        self.assertEqual(credential_data["fields"]["starred_by_names"], "star-user")
+
+    def test_authenticated_user_can_toggle_credential_star(self):
+        self.login_as_owner()
+        credential = self.credentials["certification"]
+        url = reverse("main:toggle_credential_star", args=[credential.pk])
+
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("main:show_credentials"))
+        self.assertTrue(credential.starred_by.filter(username="test-owner").exists())
+
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("main:show_credentials"))
+        self.assertFalse(credential.starred_by.filter(username="test-owner").exists())
+
     def test_create_credential(self):
         """Verify that posting the credential form creates a credential."""
         self.login_as_owner()
