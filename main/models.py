@@ -77,6 +77,10 @@ class Credential(models.Model):
     ## image relevant to this credential like trophy, certificate, badge, etc
     image = models.ImageField(upload_to="credentials/", blank=True, null=True)
 
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_credentials", blank=True
+    )
+    
     @classmethod
     def grouped_by_category(cls):
         return {
