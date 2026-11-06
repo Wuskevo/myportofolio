@@ -4,6 +4,10 @@ NPM : 2506632892
 
 Class : PBP B
 
+DONT FORGET TO REMOVE THIS :v
+admin
+lambda123
+
 ### Assignment 1
 
 #### 1. HTML5 sematic elements
@@ -52,9 +56,7 @@ When a user requests your portfolio, the URL dispatcher directs the request to a
 
 Once that JSON arrives at a client (like a mobile app or frontend JavaScript), the client unpacks the data and displays it. However, if your Django server is already building the final HTML page itself on the backend, converting your database models into JSON text and then immediately converting them back into Python objects creates completely unnecessary extra work. For traditional server-rendered HTML pages, you should skip serialization entirely and pass the raw database `QuerySet` directly into Django's `render()` function.
 
-## AI Disclosure
-
-### How I used CoPilot in expediting assignment 3
+#### AI Disclosure How I used CoPilot in expediting assignment 3
 
 - I used CoPilot to refactor tests.py into smaller scripts so that I can focus on one entity per script instead of having one God Class.
 - I used CoPilot to quickly rename the files to match the convention used in the tutorial (pluralized)
@@ -86,6 +88,27 @@ Once that JSON arrives at a client (like a mobile app or frontend JavaScript), t
 - After that change made `started_at` required in submitted forms, I checked the actual form error and corrected the update and AJAX-create test payloads to include realistic `datetime-local` values instead of making the field optional just to satisfy old tests.
 - Copilot's first card-action refactors did not fully match the intended layout, even after several iterations. I manually edited the HTML and CSS to correct the remaining issues: keeping project and experience star/edit/delete buttons in one row, preserving the credential card layout, and hiding a missing verification button while reserving its space instead of showing fallback text.
 - Copilot can reason from stale context and automated Django tests do not verify visual appearance in a browser. I checked the current files and test failures, pointed out the remaining layout and template mismatches, and used the focused tests to confirm the resulting behavior.
+
+### Assignment 6
+1. REST, RESTful APIs, and PUT vs. PATCH
+
+REST is a set of conventions for organizing an API around things (like a project/experience) that each have their own address (URL), where the HTTP method tells you what you’re doing to them: GET to look, POST to add, PUT/PATCH to change, DELETE to remove. Returning JSON alone isn’t enough because JSON is just the language on the page, not the rules of the house. It’s like a restaurant that hands you a neatly printed menu but makes you order by shouting “do_the_food_thing_now/5” instead of asking for a specific dish. PUT is like replacing your entire wardrobe with a new set, so you must hand over every item, while PATCH is like swapping out one shirt. I’d use PUT for the full Experience edit form, and PATCH for the star toggle, since only one value changes.
+
+2. The Role of a Serializer in Django REST Framework
+
+A serializer is like a translator at the border in that it turns Python model objects into plain JSON the client can read, and turns incoming JSON back into something Django can safely save, checking it along the way. Manually building a dictionary for JsonResponse (Tutorial 05) is like packing every suitcase by hand and re-deciding what goes in each one. It works for a single trip, but a serializer is a packing checklist written once and reused everywhere, so when a model field changes, you update one list instead of hunting through every view.
+
+3. Authentication vs. Authorization, and Why Permission Classes Matter
+
+Authentication is the guard at the door checking your ID (“who are you?”), while authorization is the guest list that says which rooms you may enter (“what are you allowed to do?”). Someone can pass the ID check and still be turned away from the staff-only room, like a logged-in user outside the Editor group trying to delete a project. Hiding a button in the template is like removing the doorknob sign. The door is still there and unlocked, and anyone can walk up and push it by sending a request by hand. Only a permission class on the server is an actual lock.
+
+4. CSRF with SessionAuthentication, and the Limits of force_authenticate
+
+With SessionAuthentication, your browser automatically shows your “membership card” (the session cookie) to the site on every request, even ones secretly triggered by a shady page in another tab. It’s like a barista who serves anyone holding your loyalty card, even if a stranger grabbed it from your pocket. The CSRF token is a secret handshake that only the real site’s own pages know, which is why data-changing requests need it. A test using force_authenticate is like walking into the building through a staff-only side entrance and then claiming the front-door security works: it skips the session check where CSRF is enforced, so it proves nothing about it. To really test it, the test must go through the front door with a real login and show that a request without the handshake is refused (403) while one with it is accepted.
+
+#### AI Disclosure For Assignment 6
+Mostly replicated patterns from tutorial 7 and previous assignments (like starred_by) for this assignment, copilot helped debug some blockers that arised as a result of the replication, like credential create button not working at some point (it was because I forgot to merge the changes from the credential/starred-by branch to main).
+
 
 ### Chat History
 
