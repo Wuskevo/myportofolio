@@ -9,12 +9,12 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from main.models import Project, Experience
+from main.models import Project, Experience, Credential
 from main.permissions import (
     IsPortfolioOwnerOrReadOnly,
     IsPortfolioOwnerOrEditorOrReadOnly,
 )
-from main.serializers import ExperienceSerializer, ProjectSerializer
+from main.serializers import CredentialSerializer, ExperienceSerializer, ProjectSerializer
 
 
 @api_view(["GET", "HEAD", "POST"])
@@ -142,4 +142,68 @@ def experience_star(request, experience_id):
     else:
         experience.starred_by.add(request.user)
     serializer = ExperienceSerializer(experience, context={"request": request})
+    return Response(serializer.data)
+
+
+@api_view(["GET", "HEAD", "POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
+def credential_list(request):
+    if request.method in ("GET", "HEAD"):
+        credentials = Credential.objects.prefetch_related("starred_by").order_by(
+            "title", "id"
+        )
+        title = request.query_params.get("title", "").strip()
+        if title:
+            credentials = credentials.filter(title__icontains=title)
+        serializer = CredentialSerializer(
+            credentials,
+            many=True,
+            context={"request": request},
+        )
+        return Response(serializer.data)
+
+    serializer = CredentialSerializer(data=request.data, context={"request": request})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
+def credential_detail(request, credential_id):
+    credential = get_object_or_404(
+        Credential.objects.prefetch_related("starred_by"),
+        pk=credential_id,
+    )
+    if request.method in ("GET", "HEAD"):
+        serializer = CredentialSerializer(credential, context={"request": request})
+        return Response(serializer.data)
+
+    if request.method == "DELETE":
+        credential.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    serializer = CredentialSerializer(
+        credential,
+        data=request.data,
+        partial=request.method == "PATCH",
+        context={"request": request},
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def credential_star(request, credential_id):
+    credential = get_object_or_404(Credential, pk=credential_id)
+    if credential.starred_by.filter(pk=request.user.pk).exists():
+        credential.starred_by.remove(request.user)
+    else:
+        credential.starred_by.add(request.user)
+    serializer = CredentialSerializer(credential, context={"request": request})
     return Response(serializer.data)
